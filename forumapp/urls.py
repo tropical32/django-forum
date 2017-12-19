@@ -12,5 +12,5 @@ urlpatterns = [
         'forum',
         views.forum,
         name='forum'
-    )
+    ),
 ]
