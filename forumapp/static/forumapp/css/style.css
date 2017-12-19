@@ -1,0 +1,9 @@
+.forum-table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: 1px solid #e9ecef;
+}
+
+nav {
+    margin-bottom: 1rem;
+}

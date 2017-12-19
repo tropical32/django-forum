@@ -20,6 +20,6 @@ def forum(request):
         'forumapp/forum.html',
         context={
             'sections': sections,
-            'forums': forums,
+            # 'forums': forums,
         }
     )
