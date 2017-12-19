@@ -7,5 +7,10 @@ urlpatterns = [
         '',
         views.index,
         name='index'
+    ),
+    path(
+        'forum',
+        views.forum,
+        name='forum'
     )
 ]
