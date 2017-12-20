@@ -26,10 +26,6 @@ class Forum(models.Model):
 class Thread(models.Model):
     name = models.CharField(max_length=100)
     forum = models.ForeignKey(Forum, null=True, on_delete=models.SET_NULL)
-    created_date = models.DateField()
-
-    class Meta:
-        ordering = ['created_date']
 
     def __str__(self):
         return self.name
@@ -37,7 +33,7 @@ class Thread(models.Model):
 
 class ThreadResponse(models.Model):
     thread = models.ForeignKey(Thread, null=True, on_delete=models.SET_NULL)
-    created_date = models.DateField()
+    created_date = models.DateField(null=True)
     responder = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     message = models.TextField(max_length=1000)
 

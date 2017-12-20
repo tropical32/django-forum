@@ -15,13 +15,14 @@ urlpatterns = [
     ),
     path(
         'forum/<int:pk>',
-        views.ThreadListView.as_view(),
+        # views.ThreadListView.as_view(),
+        views.forum,
         name='forum'
     ),
     path(
-        'new-thread/<int:pk>',
-        views.CreateThread.as_view(),
+        'forum/<int:pk>/new-thread',
+        # views.ThreadCreateView.as_view(),
+        views.new_thread,
         name='new-thread'
     )
-
 ]
