@@ -7,3 +7,8 @@
 nav {
     margin-bottom: 1rem;
 }
+
+.clickable-row:hover {
+    background-color: #eee;
+    cursor: pointer;
+}
