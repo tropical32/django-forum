@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, \
+    LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -55,7 +56,40 @@ def thread_view(request, fpk, tpk):
     )
 
 
-# TODO fix permission in reality not required
+def respond(request, fpk, tpk):
+    if request.method == "POST":
+        form = ThreadResponseModelForm(
+            request.POST,
+        )
+        if form.is_valid():
+            obj_response = form.save()
+
+            obj_response.responder = request.user
+            obj_response.created_date = datetime.today()
+            obj_response.thread = Thread.objects.get(id=tpk)
+
+            obj_response.save()
+
+            return HttpResponseRedirect(
+                reverse(
+                    'thread-view',
+                    kwargs={
+                        'fpk': fpk,
+                        'tpk': tpk
+                    }
+                )
+            )
+    else:
+        form = ThreadResponseModelForm()
+    return render(
+        request,
+        'forumapp/threadresponse_form.html',
+        context={
+            'form': form
+        }
+    )
+
+
 @permission_required('can_create_thread')
 def new_thread(request, pk):
     if request.method == "POST":

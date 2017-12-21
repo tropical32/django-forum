@@ -14,3 +14,4 @@ class ThreadResponseModelForm(models.ModelForm):
     class Meta:
         model = ThreadResponse
         fields = ['message']
+

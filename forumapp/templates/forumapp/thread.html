@@ -1,0 +1,28 @@
+{% extends "forumapp/base.html" %}
+
+{% block content %}
+{% if response_list %}
+<h1>{{ thread }}</h1>
+<table class="table forum-table">
+    <thead>
+    <tr>
+        <th>User</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for response in response_list %}
+    <tr>
+        <td>{{ response }} by <a href="#">{{ response.responder }}</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<div>The requested thread is non-existent on this forum.</div>
+{% endif %}
+
+<a href="{% url 'respond-thread' thread.forum.id thread.id %}" class="btn btn-success" role="button">Respond</a>
+
+{% endblock %}

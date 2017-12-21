@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, reverse
 
 from forumapp import views
 
@@ -29,5 +29,15 @@ urlpatterns = [
         'forum/<int:fpk>/thread/<int:tpk>',
         views.thread_view,
         name='thread-view'
+    ),
+    path(
+        'forum/<int:fpk>/thread/<int:tpk>/respond',
+        views.respond,
+        name='respond-thread'
     )
+    # path(
+    #     'forum/<int:fpk>/thread/<int:tpk>/respond',
+    #     views.ThreadRespondCreateView.as_view(),
+    #     name='respond-thread',
+    # )
 ]
