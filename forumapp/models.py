@@ -38,7 +38,7 @@ class Thread(models.Model):
 
 class ThreadResponse(models.Model):
     thread = models.ForeignKey(Thread, null=True, on_delete=models.SET_NULL)
-    created_date = models.DateField(null=True)
+    created_datetime = models.DateTimeField(null=True)
     responder = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     message = models.TextField(max_length=1000)
 

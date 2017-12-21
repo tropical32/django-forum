@@ -1,6 +1,7 @@
 {% extends "forumapp/base.html" %}
 
 {% block content %}
+<div>Current forum: <a href="{% url 'forum' forum.id %}">{{ forum.name }}</a></div>
 {% if response_list %}
 <table class="table forum-table">
     <thead>
@@ -13,7 +14,7 @@
     {% for response in response_list %}
     <tr>
         <td>
-            {{ response.created_date }} <br/><br/>
+            {{ response.created_datetime }} <br/><br/>
             {{ response }}
             <hr/>
             by <a href="#">{{ response.responder }}</a>

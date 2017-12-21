@@ -1,18 +1,16 @@
+import datetime
+
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import PermissionRequiredMixin, \
-    LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect, \
+from django.http import HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils.datetime_safe import datetime
-from django.views.generic import ListView, CreateView
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
     ThreadDeleteView
-from .models import Thread, Forum, ForumSection, ThreadResponse
+from .models import Thread, ForumSection, ThreadResponse, Forum
 
 
 def signup(request):
@@ -68,6 +66,7 @@ def forum(request, pk):
 
 def thread_view(request, fpk, tpk):
     thread = Thread.objects.get(id=tpk)
+    parent_forum = Forum.objects.get(id=fpk)
     response_list = ThreadResponse.objects.filter(
         thread=tpk,
         thread__forum=fpk
@@ -77,7 +76,8 @@ def thread_view(request, fpk, tpk):
         'forumapp/thread.html',
         context={
             'thread': thread,
-            'response_list': response_list
+            'response_list': response_list,
+            'forum': parent_forum
         }
     )
 
@@ -91,7 +91,7 @@ def respond(request, fpk, tpk):
             obj_response = form.save()
 
             obj_response.responder = request.user
-            obj_response.created_date = datetime.today()
+            obj_response.created_datetime = datetime.datetime.now()
             obj_response.thread = Thread.objects.get(id=tpk)
 
             obj_response.save()
@@ -122,7 +122,7 @@ def delete_thread(request, fpk, tpk):
         thread = Thread.objects.get(id=tpk)
 
         creator = thread.threadresponse_set \
-            .order_by('created_date') \
+            .order_by('created_datetime') \
             .first() \
             .responder
         if creator == request.user or request.user.has_perm(
@@ -198,15 +198,16 @@ def new_thread(request, pk):
 
                 obj_response.thread = thread_obj
                 obj_response.responder = request.user
-                obj_response.created_date = datetime.today()
+                obj_response.created_datetime = datetime.datetime.now()
 
                 obj_response.save()
 
                 return HttpResponseRedirect(
                     reverse(
-                        'forum',
+                        'thread-view',
                         kwargs={
-                            'pk': pk
+                            'fpk': thread_obj.forum.id,
+                            'tpk': thread_obj.id
                         }
                     )
                 )
