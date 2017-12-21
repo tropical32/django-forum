@@ -1,11 +1,13 @@
 {% extends "forumapp/base.html" %}
 
 {% block content %}
+<div>Editing your post for: <a href="{% url 'thread-view' thread.forum.id thread.id %}">{{ thread }}</a></div>
 <form action="" method="post">
     {% csrf_token %}
     <table>
         {{ form.as_table }}
     </table>
-    <input type="submit" value="Submit"/>
+    <input class="btn btn-success" type="submit" value="Submit"/>
 </form>
+{# TODO limit words #}
 {% endblock %}

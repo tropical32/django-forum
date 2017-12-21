@@ -190,7 +190,8 @@ def edit_post(request, fpk, tpk, ppk):
             request,
             'forumapp/threadresponse_form.html',
             context={
-                'form': form
+                'form': form,
+                'thread': Thread.objects.get(id=tpk)
             }
         )
 
@@ -238,6 +239,7 @@ def new_thread(request, pk):
             'forumapp/thread_form.html',
             context={
                 'form_thread': form_thread,
-                'form_response': form_response
+                'form_response': form_response,
+                'forum': pk
             }
         )

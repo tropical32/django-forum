@@ -3,31 +3,38 @@
 {% block content %}
 <div>Forum: {{ forum.name }} - {{forum.section.name }}</div>
 {% if thread_list %}
-    <table class="table forum-table">
-        <thead>
-        <tr>
-            <th>All posts</th>
-            <th>Replies</th>
-            <th>Last activity</th>
-        </tr>
-        </thead>
+<table class="table forum-table">
+    <thead>
+    <tr>
+        <th>All posts</th>
+        <th>Replies</th>
+        <th>Last activity</th>
+    </tr>
+    </thead>
     {% for thread in thread_list %}
-        <tbody>
-        <tr>
-            <td><a href="{% url 'thread-view' thread.forum.id thread.id %}">{{ thread.name }}</a></td>
-            <td>{{ thread.threadresponse_set.all|length|add:"-1" }}</td>
-            {% if thread.threadresponse_set.all|length > 1 %}
-            <td>{{ thread.threadresponse_set.last.message|truncatechars:15 }}</td>
-            {% else %}
-            <td>No responses</td>
-            {% endif %}
-        </tr>
-        </tbody>
+    <tbody>
+    <tr>
+        <td>
+            <a href="{% url 'thread-view' thread.forum.id thread.id %}">
+                {{ thread.name }}
+            </a>
+        </td>
+        <td>{{ thread.threadresponse_set.all|length|add:"-1" }}</td>
+        {% if thread.threadresponse_set.all|length > 1 %}
+        <td>{{ thread.threadresponse_set.last.message|truncatechars:15 }}</td>
+        {% else %}
+        <td>No responses</td>
+        {% endif %}
+    </tr>
+    </tbody>
     {% endfor %}
 </table>
 {% else %}
-    <div>No threads.</div>
+<div>No threads.</div>
 {% endif %}
-{# TODO fix the route for new-thread #}
-<a href="{% url 'new-thread' 1 %}"><button>Create a new thread</button></a>
+<a
+    href="{% url 'new-thread' forum.id %}"
+    class="btn btn-success"
+    role="button"
+>Create a new thread</a>
 {% endblock %}

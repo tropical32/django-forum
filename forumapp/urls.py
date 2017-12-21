@@ -45,9 +45,4 @@ urlpatterns = [
         views.edit_post,
         name='edit-post'
     )
-    # path(
-    #     'forum/<int:fpk>/thread/<int:tpk>/respond',
-    #     views.ThreadRespondCreateView.as_view(),
-    #     name='respond-thread',
-    # )
 ]
