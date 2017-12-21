@@ -2,18 +2,17 @@
 
 {% block content %}
 {% if response_list %}
-<h1>{{ thread }}</h1>
 <table class="table forum-table">
     <thead>
     <tr>
-        <th>User</th>
+        <th>{{ thread }}</th>
     </tr>
     </thead>
 
     <tbody>
     {% for response in response_list %}
     <tr>
-        <td>{{ response }}<br />by <a href="#">{{ response.responder }}</a></td>
+        <td>{{ response }}<hr />by <a href="#">{{ response.responder }}</a></td>
     </tr>
     {% endfor %}
     </tbody>
