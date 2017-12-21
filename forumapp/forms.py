@@ -1,4 +1,6 @@
-from django.forms import models, HiddenInput
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.forms import models, HiddenInput, forms
 
 from .models import Thread, ThreadResponse
 
@@ -14,4 +16,3 @@ class ThreadResponseModelForm(models.ModelForm):
     class Meta:
         model = ThreadResponse
         fields = ['message']
-

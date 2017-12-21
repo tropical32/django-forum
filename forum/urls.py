@@ -18,11 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 
 from forum import settings
+from forumapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('forumapp/', include('forumapp.urls')),
-    path('accounts/', include('django.contrib.auth.urls'))
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('signup/', views.signup, name='signup'),
 ]
 
 if settings.DEBUG:
