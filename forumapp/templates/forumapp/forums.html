@@ -16,8 +16,16 @@
         {% for forum in section.forum_set.all %}
         <tr class="clickable-row">
             <td><a href="{% url 'forum' forum.id %}">{{ forum.name }}</a></td>
-            <td>*Recent Posts*</td>
-            <td>*Number of topics*</td>
+            {% if forum.thread_set.all|length > 0 %}
+            <td>
+                <a href="{% url 'thread-view' forum.id forum.thread_set.last.id %}">
+                    {{ forum.thread_set.last }}
+                </a>
+            </td>
+            {% else %}
+            <td>No recent posts.</td>
+            {% endif %}
+            <td>{{ forum.thread_set.all|length }}</td>
         </tr>
         {% endfor %}
         </tbody>

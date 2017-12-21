@@ -1,6 +1,7 @@
 {% extends "forumapp/base.html" %}
 
 {% block content %}
+<div>Forum: {{ forum.name }} - {{forum.section.name }}</div>
 {% if thread_list %}
     <table class="table forum-table">
         <thead>

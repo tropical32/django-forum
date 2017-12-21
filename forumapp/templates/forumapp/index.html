@@ -1,7 +1,7 @@
 {% extends "forumapp/base.html" %}
 
 {% block content %}
-<div>Number of users: </div>
-<div>Number of posts: </div>
-<div>Number of threads: </div>
+<div>Number of users: {{ users_count }}</div>
+<div>Number of responses: {{ responses_count }}</div>
+<div>Number of threads: {{ threads_count }}</div>
 {% endblock %}

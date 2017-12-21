@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import render, redirect
@@ -36,9 +37,23 @@ def signup(request):
 
 
 def index(request):
+    users_count = User.objects.count()
+    threads_count = Thread.objects.count()
+
+    responses_count = ThreadResponse.objects.exclude(
+        thread__isnull=True
+    ).count()
+
+    responses_count -= threads_count
+
     return render(
         request,
-        'forumapp/index.html'
+        'forumapp/index.html',
+        context={
+            'users_count': users_count,
+            'threads_count': threads_count,
+            'responses_count': responses_count
+        }
     )
 
 
@@ -59,7 +74,8 @@ def forum(request, pk):
         request,
         'forumapp/thread_list.html',
         context={
-            'thread_list': thread_list
+            'thread_list': thread_list,
+            'forum': Forum.objects.get(id=pk)
         }
     )
 
