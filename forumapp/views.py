@@ -29,12 +29,28 @@ def forums(request):
 
 
 def forum(request, pk):
-    threads = Thread.objects.filter(id=pk)
+    thread_list = Thread.objects.filter(forum=pk)
     return render(
         request,
         'forumapp/thread_list.html',
         context={
-            'threads': threads
+            'thread_list': thread_list
+        }
+    )
+
+
+def thread_view(request, fpk, tpk):
+    thread = Thread.objects.get(id=tpk)
+    response_list = ThreadResponse.objects.filter(
+        thread=tpk,
+        thread__forum=fpk
+    )
+    return render(
+        request,
+        'forumapp/thread.html',
+        context={
+            'thread': thread,
+            'response_list': response_list
         }
     )
 

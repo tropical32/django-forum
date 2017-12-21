@@ -1,22 +1,28 @@
 {% extends "forumapp/base.html" %}
 
 {% block content %}
-{% for thread in thread_list %}
-<table>
-    <thead>
-    <tr>
-        <th>Th1</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>Td1</td>
-    </tr>
-    </tbody>
+{% if thread_list %}
+    <table class="table forum-table">
+        <thead>
+        <tr>
+            <th>All posts</th>
+            <th>Replies</th>
+            <th>Last activity</th>
+        </tr>
+        </thead>
+    {% for thread in thread_list %}
+        <tbody>
+        <tr>
+            <td>{{ thread.name }}</td>
+            <td>*Replies*</td>
+            <td>{{ thread.threadresponse_set }}</td>
+        </tr>
+        </tbody>
+    {% endfor %}
 </table>
-{% empty %}
-<div>No threads.</div>
-{% endfor %}
+{% else %}
+    <div>No threads.</div>
+{% endif %}
 {# TODO fix the route for new-thread #}
 <a href="{% url 'new-thread' 1 %}"><button>Create a new thread</button></a>
 {% endblock %}

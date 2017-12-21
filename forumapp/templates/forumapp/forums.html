@@ -15,7 +15,7 @@
         <tbody>
         {% for forum in section.forum_set.all %}
         <tr class="clickable-row">
-            <td>{{ forum.name }}</td>
+            <td><a href="{% url 'forum' forum.id %}">{{ forum.name }}</a></td>
             <td>*Recent Posts*</td>
             <td>*Number of topics*</td>
         </tr>

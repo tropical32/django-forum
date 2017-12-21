@@ -24,5 +24,10 @@ urlpatterns = [
         # views.ThreadCreateView.as_view(),
         views.new_thread,
         name='new-thread'
+    ),
+    path(
+        'forum/<int:fpk>/thread/<int:tpk>',
+        views.thread_view,
+        name='thread-view'
     )
 ]
