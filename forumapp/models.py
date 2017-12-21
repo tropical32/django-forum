@@ -30,6 +30,11 @@ class Thread(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        permissions = [
+            ('can_remove_any_thread', 'Can remove ANY thread.'),
+        ]
+
 
 class ThreadResponse(models.Model):
     thread = models.ForeignKey(Thread, null=True, on_delete=models.SET_NULL)

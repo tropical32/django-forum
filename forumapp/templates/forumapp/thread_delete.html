@@ -1,0 +1,11 @@
+{% extends 'forumapp/base.html' %}
+
+{% block content %}
+<div>Are you sure you want to delete the thread?</div>
+<form method="post">
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Submit"/>
+    </form>
+</form>
+{% endblock %}

@@ -1,15 +1,17 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import PermissionRequiredMixin, \
     LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, \
+    HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.datetime_safe import datetime
 from django.views.generic import ListView, CreateView
 
-from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm
+from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
+    ThreadDeleteView
 from .models import Thread, Forum, ForumSection, ThreadResponse
 
 
@@ -114,7 +116,37 @@ def respond(request, fpk, tpk):
     )
 
 
-@permission_required('can_create_thread')
+@login_required
+def delete_thread(request, fpk, tpk):
+    if request.method == "POST":
+        thread = Thread.objects.get(id=tpk)
+
+        # TODO sort by date created
+        creator = thread.threadresponse_set \
+            .order_by('created_date') \
+            .first() \
+            .responder
+        if creator == request.user or request.user.has_perm(
+            'can_delete_any_thread'
+        ):
+            thread.delete()
+        else:
+            return HttpResponseForbidden()
+        return HttpResponseRedirect(
+            reverse('forum', kwargs={'pk': fpk})
+        )
+    else:
+        form = ThreadDeleteView()
+        return render(
+            request,
+            'forumapp/thread_delete.html',
+            context={
+                'form': form
+            }
+        )
+
+
+@login_required
 def new_thread(request, pk):
     if request.method == "POST":
         form_thread = ThreadCreateModelForm(
