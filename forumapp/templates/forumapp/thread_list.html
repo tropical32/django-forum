@@ -15,8 +15,12 @@
         <tbody>
         <tr>
             <td><a href="{% url 'thread-view' thread.forum.id thread.id %}">{{ thread.name }}</a></td>
-            <td>*Replies*</td>
-            <td>{{ thread.threadresponse_set }}</td>
+            <td>{{ thread.threadresponse_set.all|length|add:"-1" }}</td>
+            {% if thread.threadresponse_set.all|length > 1 %}
+            <td>{{ thread.threadresponse_set.last.message|truncatechars:15 }}</td>
+            {% else %}
+            <td>No responses</td>
+            {% endif %}
         </tr>
         </tbody>
     {% endfor %}
