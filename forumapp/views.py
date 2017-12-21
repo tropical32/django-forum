@@ -121,13 +121,12 @@ def delete_thread(request, fpk, tpk):
     if request.method == "POST":
         thread = Thread.objects.get(id=tpk)
 
-        # TODO sort by date created
         creator = thread.threadresponse_set \
             .order_by('created_date') \
             .first() \
             .responder
         if creator == request.user or request.user.has_perm(
-            'can_delete_any_thread'
+                'can_delete_any_thread'
         ):
             thread.delete()
         else:
@@ -140,6 +139,40 @@ def delete_thread(request, fpk, tpk):
         return render(
             request,
             'forumapp/thread_delete.html',
+            context={
+                'form': form
+            }
+        )
+
+
+@login_required
+def edit_post(request, fpk, tpk, ppk):
+    if request.method == "POST":
+        thread_response = ThreadResponse.objects.get(id=ppk)
+        if request.user == thread_response.responder:
+            form = ThreadResponseModelForm(request.POST)
+            if form.is_valid():
+                thread_response.message = form.cleaned_data['message']
+                thread_response.save()
+                # form.save()
+                return HttpResponseRedirect(
+                    reverse(
+                        'thread-view',
+                        kwargs={
+                            'fpk': fpk,
+                            'tpk': tpk
+                        }
+                    )
+                )
+        else:
+            return HttpResponseForbidden()
+
+    else:
+        thread_response = ThreadResponse.objects.get(id=ppk)
+        form = ThreadResponseModelForm(instance=thread_response)
+        return render(
+            request,
+            'forumapp/threadresponse_form.html',
             context={
                 'form': form
             }

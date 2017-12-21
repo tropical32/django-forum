@@ -39,6 +39,11 @@ urlpatterns = [
         'forum/<int:fpk>/thread/<int:tpk>/delete',
         views.delete_thread,
         name='thread-delete'
+    ),
+    path(
+        'forum/<int:fpk>/thread/<int:tpk>/post/<int:ppk>/edit',
+        views.edit_post,
+        name='edit-post'
     )
     # path(
     #     'forum/<int:fpk>/thread/<int:tpk>/respond',

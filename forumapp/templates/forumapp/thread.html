@@ -13,10 +13,17 @@
     {% for response in response_list %}
     <tr>
         <td>
-            {{ response.created_date }} <br /><br />
+            {{ response.created_date }} <br/><br/>
             {{ response }}
             <hr/>
             by <a href="#">{{ response.responder }}</a>
+            {% if response.responder == request.user %}
+            <a
+                style="float: right"
+                href="{% url 'edit-post' response.thread.forum.id response.thread.id response.id %}" class="btn btn-info"
+                role="button"
+            >Edit</a>
+            {% endif %}
         </td>
     </tr>
     {% endfor %}
