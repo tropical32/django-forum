@@ -17,7 +17,7 @@
             {{ response.created_datetime }} <br/><br/>
             {{ response }}
             <hr/>
-            by <a href="#">{{ response.responder }}</a>
+            by <a href="{% url 'user-view' response.responder.id %}">{{ response.responder }}</a>
             {% if response.responder == request.user %}
             <a
                 style="float: right"

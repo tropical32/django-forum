@@ -1,0 +1,9 @@
+{% extends 'forumapp/base.html' %}
+
+{% block content %}
+{% for response in user_responses %}
+<div>
+<a href="{% url 'thread-view' response.thread.forum.id response.thread.id %}">{{ response }}</a>
+</div>
+{% endfor %}
+{% endblock %}

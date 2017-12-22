@@ -21,6 +21,11 @@ urlpatterns = [
         name='forum'
     ),
     path(
+        'user/<int:pk>',
+        views.user_view,
+        name='user-view'
+    ),
+    path(
         'forum/<int:pk>/new-thread',
         # views.ThreadCreateView.as_view(),
         views.new_thread,

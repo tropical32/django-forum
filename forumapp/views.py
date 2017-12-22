@@ -199,6 +199,20 @@ def edit_post(request, fpk, tpk, ppk):
         )
 
 
+def user_view(request, pk):
+    user = User.objects.get(id=pk)
+    user_responses = ThreadResponse.objects.filter(responder=pk) \
+        .exclude(thread__isnull=True)
+    return render(
+        request,
+        'forumapp/user_view.html',
+        context={
+            'user': user,
+            'user_responses': user_responses
+        }
+    )
+
+
 @login_required
 def new_thread(request, pk):
     if request.method == "POST":
