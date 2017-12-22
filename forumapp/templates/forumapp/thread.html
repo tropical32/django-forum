@@ -34,7 +34,6 @@
 {% else %}
 <div>The requested thread is non-existent on this forum.</div>
 {% endif %}
-
 <a href="{% url 'respond-thread' thread.forum.id thread.id %}"
    class="btn btn-success" role="button">Respond</a>
 <a href="{% url 'thread-delete' thread.forum.id thread.id %}"

@@ -1,7 +1,11 @@
 {% extends "forumapp/base.html" %}
 
 {% block content %}
-<div>Editing your post for: <a href="{% url 'thread-view' thread.forum.id thread.id %}">{{ thread }}</a></div>
+{% if form.message.value %}
+<div>Editing your post for: <a href="{% url 'thread-view' forum.id thread.id %}">{{ thread }}</a></div>
+{% else %}
+<div>Responding to: <a href="{% url 'thread-view' forum.id thread.id %}">{{ thread }}</a></div>
+{% endif %}
 <form action="" method="post">
     {% csrf_token %}
     <table>

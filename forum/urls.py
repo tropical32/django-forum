@@ -25,6 +25,7 @@ urlpatterns = [
     path('forumapp/', include('forumapp.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', views.signup, name='signup'),
+    path('', views.index, name='index')
 ]
 
 if settings.DEBUG:
