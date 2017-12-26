@@ -36,7 +36,9 @@
 {% endif %}
 <a href="{% url 'respond-thread' thread.forum.id thread.id %}"
    class="btn btn-success" role="button">Respond</a>
+{% if can_delete %}
 <a href="{% url 'thread-delete' thread.forum.id thread.id %}"
    class="btn btn-danger" role="button">Delete thread</a>
+{% endif %}
 
 {% endblock %}

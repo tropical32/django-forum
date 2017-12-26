@@ -127,4 +127,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/forumapp'
-
+APPEND_SLASH = True

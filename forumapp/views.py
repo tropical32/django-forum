@@ -86,14 +86,19 @@ def thread_view(request, fpk, tpk):
     response_list = ThreadResponse.objects.filter(
         thread=tpk,
         thread__forum=fpk
+    ).order_by(
+        'created_datetime'
     )
+    can_delete = response_list[0].responder == request.user or \
+        request.user.has_perm("can_delete_any_thread")
     return render(
         request,
         'forumapp/thread.html',
         context={
             'thread': thread,
             'response_list': response_list,
-            'forum': parent_forum
+            'forum': parent_forum,
+            'can_delete': can_delete
         }
     )
 
@@ -246,7 +251,7 @@ def new_thread(request, pk):
                     )
                 )
             else:  # response not valid
-                thread_obj.delete()  # TODO does it work?
+                thread_obj.delete()
     else:
         form_thread = ThreadCreateModelForm(prefix='form_thread')
         form_response = ThreadResponseModelForm(prefix='form_response')
