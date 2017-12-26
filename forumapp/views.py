@@ -10,7 +10,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
-    ThreadDeleteView, ThreadResponseDeleteView
+    ThreadResponseDeleteForm, \
+    ThreadDeleteForm
 from .models import Thread, ForumSection, ThreadResponse, Forum
 
 
@@ -142,23 +143,27 @@ def respond(request, fpk, tpk):
 @login_required
 def delete_thread(request, fpk, tpk):
     if request.method == "POST":
-        thread = Thread.objects.get(id=tpk)
+        form = ThreadDeleteForm(request.POST)
+        if form.is_valid():
+            thread = Thread.objects.get(id=tpk)
 
-        creator = thread.threadresponse_set \
-            .order_by('created_datetime') \
-            .first() \
-            .responder
-        if creator == request.user or request.user.has_perm(
-                'forumapp.can_delete_any_thread'
-        ):
-            thread.delete()
-        else:
-            return HttpResponseForbidden()
-        return HttpResponseRedirect(
-            reverse('forum', kwargs={'pk': fpk})
-        )
+            creator = thread.threadresponse_set \
+                .order_by('created_datetime') \
+                .first() \
+                .responder
+            if creator == request.user or request.user.has_perm(
+                    'forumapp.can_delete_any_thread'
+            ):
+                thread.delete()
+            else:
+                return HttpResponseForbidden(
+                    "You are not allowed to remove this thread."
+                )
+            return HttpResponseRedirect(
+                reverse('forum', kwargs={'pk': fpk})
+            )
     else:
-        form = ThreadDeleteView()
+        form = ThreadDeleteForm()
         return render(
             request,
             'forumapp/thread_delete.html',
@@ -176,23 +181,33 @@ def delete_post(request, fpk, tpk, ppk):
     :param tpk: thread primary key
     :param ppk: post primary key
     """
-    form = ThreadResponseDeleteView()
+    form = ThreadResponseDeleteForm()
     if request.method == "POST":
-        response = ThreadResponse.objects.get(id=ppk)
-        if request.user == response.responder or \
-                request.user.has_perm('forumapp.can_remove_any_response'):
-            response.delete()
-        else:
-            return HttpResponseForbidden()
-        return HttpResponseRedirect(
-            reverse(
-                'thread-view',
-                kwargs={
-                    'fpk': fpk,
-                    'tpk': tpk
-                }
+        form = ThreadResponseDeleteForm(request.POST)
+        if form.is_valid():
+            response = ThreadResponse.objects.get(id=ppk)
+            first_thread_response = ThreadResponse.objects.filter(
+                thread=response.thread
+            ).order_by('created_datetime')[0]
+
+            if first_thread_response == response:
+                return HttpResponseForbidden("Can't delete the first response!")
+
+            if request.user == response.responder or \
+                    request.user.has_perm('forumapp.can_remove_any_response'):
+                response.delete()
+            else:
+                return HttpResponseForbidden(
+                    "You are not allowed to delete this post.")
+            return HttpResponseRedirect(
+                reverse(
+                    'thread-view',
+                    kwargs={
+                        'fpk': fpk,
+                        'tpk': tpk
+                    }
+                )
             )
-        )
 
     return render(
         request,
@@ -222,7 +237,9 @@ def edit_post(request, fpk, tpk, ppk):
                     )
                 )
         else:
-            return HttpResponseForbidden()
+            return HttpResponseForbidden(
+                "You are not allowed to remove this post."
+            )
 
     else:
         thread_response = ThreadResponse.objects.get(id=ppk)

@@ -18,13 +18,13 @@ class ThreadResponseModelForm(models.ModelForm):
         fields = ['message']
 
 
-class ThreadDeleteView(models.ModelForm):
+class ThreadDeleteForm(models.ModelForm):
     class Meta:
         model = Thread
         fields = []
 
 
-class ThreadResponseDeleteView(models.ModelForm):
+class ThreadResponseDeleteForm(models.ModelForm):
     class Meta:
         model = Thread
         fields = []
