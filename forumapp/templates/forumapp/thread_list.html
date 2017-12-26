@@ -13,7 +13,7 @@
     </thead>
     {% for thread in thread_list %}
     <tbody>
-    <tr>
+    <tr class="clickable-row">
         <td>
             <a href="{% url 'thread-view' thread.forum.id thread.id %}">
                 {{ thread.name }} <br />

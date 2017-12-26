@@ -1,6 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from django.forms import models, HiddenInput, forms
+from django.forms import models
 
 from .models import Thread, ThreadResponse
 

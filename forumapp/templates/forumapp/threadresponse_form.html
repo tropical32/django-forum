@@ -11,7 +11,23 @@
     <table>
         {{ form.as_table }}
     </table>
+    <div id="chars_left"></div>
     <input class="btn btn-success" type="submit" value="Submit"/>
 </form>
-{# TODO limit words #}
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    chars_left = document.getElementById('chars_left');
+    message_field = document.getElementsByName('message')[0];
+    displayCurrentAndMaxLength();
+
+    function displayCurrentAndMaxLength() {
+        chars_left.innerText = '' + message_field.textLength + '/' + message_field.maxLength;
+    }
+
+    message_field.addEventListener(
+        'input', displayCurrentAndMaxLength
+    );
+});
+</script>
 {% endblock %}

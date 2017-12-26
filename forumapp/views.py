@@ -90,7 +90,7 @@ def thread_view(request, fpk, tpk):
         'created_datetime'
     )
     can_delete = response_list[0].responder == request.user or \
-        request.user.has_perm("can_delete_any_thread")
+                 request.user.has_perm("can_delete_any_thread")
     return render(
         request,
         'forumapp/thread.html',
@@ -149,7 +149,7 @@ def delete_thread(request, fpk, tpk):
             .first() \
             .responder
         if creator == request.user or request.user.has_perm(
-                'can_delete_any_thread'
+            'can_delete_any_thread'
         ):
             thread.delete()
         else:
@@ -177,7 +177,6 @@ def edit_post(request, fpk, tpk, ppk):
             if form.is_valid():
                 thread_response.message = form.cleaned_data['message']
                 thread_response.save()
-                # form.save()
                 return HttpResponseRedirect(
                     reverse(
                         'thread-view',

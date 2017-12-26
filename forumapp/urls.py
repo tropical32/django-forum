@@ -1,5 +1,4 @@
-from django.conf.urls import url
-from django.urls import path, reverse
+from django.urls import path
 
 from forumapp import views
 
@@ -16,7 +15,6 @@ urlpatterns = [
     ),
     path(
         'forum/<int:pk>',
-        # views.ThreadListView.as_view(),
         views.forum,
         name='forum'
     ),
@@ -27,7 +25,6 @@ urlpatterns = [
     ),
     path(
         'forum/<int:pk>/new-thread',
-        # views.ThreadCreateView.as_view(),
         views.new_thread,
         name='new-thread'
     ),
@@ -37,12 +34,12 @@ urlpatterns = [
         name='thread-view'
     ),
     path(
-        'forum/<int:fpk>/thread/<int:tpk>/respond/',
+        'forum/<int:fpk>/thread/<int:tpk>/respond',
         views.respond,
         name='respond-thread'
     ),
     path(
-        'forum/<int:fpk>/thread/<int:tpk>/delete/',
+        'forum/<int:fpk>/thread/<int:tpk>/delete',
         views.delete_thread,
         name='thread-delete'
     ),
@@ -51,9 +48,4 @@ urlpatterns = [
         views.edit_post,
         name='edit-post'
     ),
-    # url(
-    #     r'^forum/(?P<fpk>[0-9]+)/thread/(?P<tpk>[0-9]+)/respond/$',
-    #     views.respond,
-    #     name='thread-respond'
-    # )
 ]
