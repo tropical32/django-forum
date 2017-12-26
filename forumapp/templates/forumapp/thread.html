@@ -27,7 +27,7 @@
                 role="button"
             >Edit</a>
             {% endif %}
-            {% if response|can_remove_response:request.user %}
+            {% if response|can_remove_response:request.user and forloop.counter > 1 %}
             <a
                 style="float: right"
                 href="{% url 'delete-post' response.thread.forum.id response.thread.id response.id %}" class="btn btn-danger"
