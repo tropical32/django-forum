@@ -104,6 +104,7 @@ def thread_view(request, fpk, tpk):
     )
 
 
+@login_required
 def respond(request, fpk, tpk):
     if request.method == "POST":
         form = ThreadResponseModelForm(
