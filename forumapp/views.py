@@ -32,7 +32,7 @@ def signup(request):
         form = UserCreationForm()
     return render(
         request,
-        'forumapp/signup.html',
+        'registration/signup.html',
         {'form': form}
     )
 
