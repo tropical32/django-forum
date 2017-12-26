@@ -1,5 +1,7 @@
 {% extends "forumapp/base.html" %}
 
+{% load forumapp_extras %}
+
 {% block content %}
 <div>Current forum: <a href="{% url 'forum' forum.id %}">{{ forum.name }}</a></div>
 {% if response_list %}
@@ -25,6 +27,13 @@
                 role="button"
             >Edit</a>
             {% endif %}
+            {% if response|can_remove_response:request.user %}
+            <a
+                style="float: right"
+                href="{% url 'delete-post' response.thread.forum.id response.thread.id response.id %}" class="btn btn-danger"
+                role="button"
+            >Delete</a>
+            {% endif %}
         </td>
     </tr>
     {% endfor %}
@@ -36,7 +45,7 @@
 {% endif %}
 <a href="{% url 'respond-thread' thread.forum.id thread.id %}"
    class="btn btn-success" role="button">Respond</a>
-{% if can_delete %}
+{% if can_delete_thread %}
 <a href="{% url 'thread-delete' thread.forum.id thread.id %}"
    class="btn btn-danger" role="button">Delete thread</a>
 {% endif %}

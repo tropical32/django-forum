@@ -1,4 +1,6 @@
 from django.forms import models
+from django.urls import reverse
+from django.views.generic import DeleteView
 
 from .models import Thread, ThreadResponse
 
@@ -17,6 +19,12 @@ class ThreadResponseModelForm(models.ModelForm):
 
 
 class ThreadDeleteView(models.ModelForm):
+    class Meta:
+        model = Thread
+        fields = []
+
+
+class ThreadResponseDeleteView(models.ModelForm):
     class Meta:
         model = Thread
         fields = []

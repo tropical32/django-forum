@@ -16,7 +16,7 @@ class Forum(models.Model):
     section = models.ForeignKey(
         ForumSection,
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.CASCADE
     )
 
     def __str__(self):
@@ -25,7 +25,7 @@ class Forum(models.Model):
 
 class Thread(models.Model):
     name = models.CharField(max_length=100)
-    forum = models.ForeignKey(Forum, null=True, on_delete=models.SET_NULL)
+    forum = models.ForeignKey(Forum, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -37,10 +37,15 @@ class Thread(models.Model):
 
 
 class ThreadResponse(models.Model):
-    thread = models.ForeignKey(Thread, null=True, on_delete=models.SET_NULL)
+    thread = models.ForeignKey(Thread, null=True, on_delete=models.CASCADE)
     created_datetime = models.DateTimeField(null=True)
-    responder = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    responder = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     message = models.TextField(max_length=1000)
+
+    class Meta:
+        permissions = [
+            ('can_remove_any_response', 'Can remove ANY response.')
+        ]
 
     def __str__(self):
         return self.message

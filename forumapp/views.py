@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
-    ThreadDeleteView
+    ThreadDeleteView, ThreadResponseDeleteView
 from .models import Thread, ForumSection, ThreadResponse, Forum
 
 
@@ -89,8 +89,8 @@ def thread_view(request, fpk, tpk):
     ).order_by(
         'created_datetime'
     )
-    can_delete = response_list[0].responder == request.user or \
-                 request.user.has_perm("can_delete_any_thread")
+    can_delete_thread = response_list[0].responder == request.user or \
+                        request.user.has_perm("forumapp.can_remove_any_thread")
     return render(
         request,
         'forumapp/thread.html',
@@ -98,7 +98,7 @@ def thread_view(request, fpk, tpk):
             'thread': thread,
             'response_list': response_list,
             'forum': parent_forum,
-            'can_delete': can_delete
+            'can_delete_thread': can_delete_thread,
         }
     )
 
@@ -149,7 +149,7 @@ def delete_thread(request, fpk, tpk):
             .first() \
             .responder
         if creator == request.user or request.user.has_perm(
-            'can_delete_any_thread'
+                'forumapp.can_delete_any_thread'
         ):
             thread.delete()
         else:
@@ -166,6 +166,41 @@ def delete_thread(request, fpk, tpk):
                 'form': form
             }
         )
+
+
+@login_required
+def delete_post(request, fpk, tpk, ppk):
+    """
+    :param request:
+    :param fpk: forum primary key
+    :param tpk: thread primary key
+    :param ppk: post primary key
+    """
+    form = ThreadResponseDeleteView()
+    if request.method == "POST":
+        response = ThreadResponse.objects.get(id=ppk)
+        if request.user == response.responder or \
+                request.user.has_perm('forumapp.can_remove_any_response'):
+            response.delete()
+        else:
+            return HttpResponseForbidden()
+        return HttpResponseRedirect(
+            reverse(
+                'thread-view',
+                kwargs={
+                    'fpk': fpk,
+                    'tpk': tpk
+                }
+            )
+        )
+
+    return render(
+        request,
+        'forumapp/response_delete.html',
+        context={
+            'form': form
+        }
+    )
 
 
 @login_required
