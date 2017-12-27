@@ -192,7 +192,9 @@ def delete_post(request, fpk, tpk, ppk):
             ).order_by('created_datetime')[0]
 
             if first_thread_response == response:
-                return HttpResponseForbidden("Can't delete the first response!")
+                return HttpResponseForbidden(
+                    "Can't delete the first response!"
+                )
 
             if request.user == response.responder or \
                     request.user.has_perm('forumapp.can_remove_any_response'):
@@ -227,6 +229,7 @@ def edit_post(request, fpk, tpk, ppk):
             form = ThreadResponseModelForm(request.POST)
             if form.is_valid():
                 thread_response.message = form.cleaned_data['message']
+                thread_response.edited = True
                 thread_response.save()
                 return HttpResponseRedirect(
                     reverse(

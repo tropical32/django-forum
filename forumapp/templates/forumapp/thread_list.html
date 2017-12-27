@@ -15,9 +15,11 @@
     <tbody>
     <tr class="clickable-row">
         <td>
-            <a href="{% url 'thread-view' thread.forum.id thread.id %}">
-                {{ thread.name }} <br />
-            </a>
+            <div>
+                <a href="{% url 'thread-view' thread.forum.id thread.id %}">
+                    {{ thread.name }}
+                </a>
+            </div>
             {{ thread.threadresponse_set.first.created_datetime }} by {{ thread.threadresponse_set.first.responder }}
         </td>
         <td>{{ thread.threadresponse_set.all|length|add:"-1" }}</td>

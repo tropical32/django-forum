@@ -41,6 +41,7 @@ class ThreadResponse(models.Model):
     created_datetime = models.DateTimeField(null=True)
     responder = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     message = models.TextField(max_length=1000)
+    edited = models.BooleanField(default=False)
 
     class Meta:
         permissions = [

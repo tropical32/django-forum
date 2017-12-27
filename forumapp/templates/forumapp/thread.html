@@ -16,8 +16,11 @@
     {% for response in response_list %}
     <tr>
         <td>
-            {{ response.created_datetime }} <br/><br/>
+            <div>{{ response.created_datetime }}</div>
             {{ response }}
+            {% if response.edited %}
+            <div><small>This post has been edited.</small></div>
+            {% endif %}
             <hr/>
             by <a href="{% url 'user-view' response.responder.id %}">{{ response.responder }}</a>
             {% if response.responder == request.user %}
