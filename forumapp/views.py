@@ -194,6 +194,18 @@ def delete_thread(request, fpk, tpk):
         )
 
 
+def enumerate_posts(thread_pk):
+    responses = Thread.objects.get(
+        id=thread_pk
+    ).threadresponse_set.all().order_by(
+        'created_datetime'
+    )
+
+    for i, response in enumerate(responses):
+        response.order_in_thread = i + 1
+        response.save()
+
+
 @login_required
 def delete_post(request, fpk, tpk, ppk):
     """
@@ -222,6 +234,9 @@ def delete_post(request, fpk, tpk, ppk):
             else:
                 return HttpResponseForbidden(
                     "You are not allowed to delete this post.")
+
+            enumerate_posts(tpk)
+
             return HttpResponseRedirect(
                 reverse(
                     'thread-view',
