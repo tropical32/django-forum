@@ -46,23 +46,25 @@
 {% else %}
 <div>The requested thread is non-existent on this forum.</div>
 {% endif %}
-<div class="pagination">
-    <span class="step-links">
+<nav aria-label="...">
+    <ul class="pagination">
         {% if response_list.has_previous %}
-        <a href="?page=1">&laquo; first</a>
-        <a href="?page={{ response_list.previous_page_number }}">previous</a>
+        <li class="page-item"><a class="page-link" href="?page={{ response_list.previous_page_number }}">Previous</a></li>
         {% endif %}
 
-        <span class="current">
-            Page {{ response_list.number }} of {{ response_list.paginator.num_pages }}.
-        </span>
-
+        {% for i in response_list.paginator.num_pages|times %}
+        {% if response_list.number|stringformat:"i" == i %}
+        <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+        {% endfor %}
         {% if response_list.has_next %}
-        <a href="?page={{ response_list.next_page_number }}">next</a>
-        <a href="?page={{ response_list.paginator.num_pages }}">last &raquo;</a>
+        <li class="page-item"><a class="page-link" href="?page={{ response_list.next_page_number }}">Next</a></li>
         {% endif %}
-    </span>
-</div>
+    </ul>
+</nav>
+
 <a href="{% url 'respond-thread' thread.forum.id thread.id %}"
    class="btn btn-success" role="button">Respond</a>
 {% if can_delete_thread %}
