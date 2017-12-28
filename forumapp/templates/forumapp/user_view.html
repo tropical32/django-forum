@@ -3,7 +3,15 @@
 {% block content %}
 {% for response in user_responses %}
 <div>
-<a href="{% url 'thread-view' response.thread.forum.id response.thread.id %}">{{ response }}</a>
+    {% if response.order_in_thread > 10 %}
+
+<a href='{% url "thread-view" response.thread.forum.id response.thread.id %}?page={% widthratio response.order_in_thread 10 1|add:"1" %}#{{ response.order_in_thread }}'>{{ response }}</a>
+
+    {% else %}
+
+<a href="{% url 'thread-view' response.thread.forum.id response.thread.id %}#{{ response.order_in_thread }}">{{ response }}</a>
+
+    {% endif %}
 </div>
 {% endfor %}
 {% endblock %}
