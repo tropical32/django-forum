@@ -31,6 +31,7 @@ urlpatterns = [
     path(
         'forum/<int:fpk>/thread/<int:tpk>',
         views.thread_view,
+        # views.ThreadResponseListView.as_view(),
         name='thread-view'
     ),
     path(

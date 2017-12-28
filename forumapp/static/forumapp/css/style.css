@@ -11,3 +11,7 @@ nav {
 .clickable-row:hover {
     background-color: #eee;
 }
+
+body {
+    padding-bottom: 2rem;
+}

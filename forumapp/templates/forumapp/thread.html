@@ -46,6 +46,23 @@
 {% else %}
 <div>The requested thread is non-existent on this forum.</div>
 {% endif %}
+<div class="pagination">
+    <span class="step-links">
+        {% if response_list.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ response_list.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ response_list.number }} of {{ response_list.paginator.num_pages }}.
+        </span>
+
+        {% if response_list.has_next %}
+        <a href="?page={{ response_list.next_page_number }}">next</a>
+        <a href="?page={{ response_list.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 <a href="{% url 'respond-thread' thread.forum.id thread.id %}"
    class="btn btn-success" role="button">Respond</a>
 {% if can_delete_thread %}

@@ -4,10 +4,12 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views import generic
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
     ThreadResponseDeleteForm, \
@@ -92,6 +94,15 @@ def thread_view(request, fpk, tpk):
     )
     can_delete_thread = response_list[0].responder == request.user or \
                         request.user.has_perm("forumapp.can_remove_any_thread")
+
+    response_paginator = Paginator(
+        response_list,
+        10
+    )
+
+    page = request.GET.get('page')
+    response_list = response_paginator.get_page(page)
+
     return render(
         request,
         'forumapp/thread.html',
@@ -102,6 +113,36 @@ def thread_view(request, fpk, tpk):
             'can_delete_thread': can_delete_thread,
         }
     )
+
+
+# class ThreadResponseListView(generic.ListView):
+#     model = ThreadResponse
+#     paginate_by = 5
+#     template_name = 'forumapp/thread.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#
+#         thread = Thread.objects.get(id=self.kwargs['tpk'])
+#         parent_forum = Forum.objects.get(id=self.kwargs['fpk'])
+#         response_list = ThreadResponse.objects.filter(
+#             thread=self.kwargs['tpk'],
+#             thread__forum=self.kwargs['fpk']
+#         ).order_by(
+#             'created_datetime'
+#         )
+#         can_delete_thread = \
+#             response_list[0].responder == self.request.user \
+#             or self.request.user.has_perm(
+#                 'forumapp.can_remove_any_thread'
+#             )
+#
+#         context['thread'] = thread
+#         context['forum'] = parent_forum
+#         context['response_list'] = response_list
+#         context['can_delete_thread'] = can_delete_thread
+#
+#         return context
 
 
 @login_required
