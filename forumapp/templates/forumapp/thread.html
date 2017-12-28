@@ -20,10 +20,26 @@
                 <span>{{ response.created_datetime }}</span>
                 <a id="{{ response.order_in_thread }}" href="#{{ response.order_in_thread }}" style="float: right">#{{ response.order_in_thread }}</a>
             </div>
-            {{ response }}
+            <div>
+                <span>{{ response }}</span>
+                <a href="#" style="float:right" class="fa fa-arrow-up"></a>
+                <a href="#" style="float:right" class="fa fa-arrow-down"></a>
+            </div>
+
             {% if response.edited %}
-            <div><small>This post has been edited.</small></div>
+
+            <div>
+                {% if response.edited %}
+                <small>This post has been edited.</small>
+                {% endif %}
+                <span style="float:right">Upvotes</span>
+            </div>
+            {% else %}
+            <div style="text-align:right">
+                <span style="text-align: right">Upvotes</span>
+            </div>
             {% endif %}
+
             <hr/>
             by <a href="{% url 'user-view' response.responder.id %}">{{ response.responder }}</a>
             {% if response.responder == request.user %}
