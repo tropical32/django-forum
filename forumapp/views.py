@@ -134,6 +134,8 @@ def respond(request, fpk, tpk):
             obj_response.responder = request.user
             obj_response.created_datetime = datetime.datetime.now()
             obj_response.thread = Thread.objects.get(id=tpk)
+            obj_response.order_in_thread = \
+                obj_response.thread.threadresponse_set.count() + 1
 
             obj_response.save()
 

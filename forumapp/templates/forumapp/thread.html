@@ -16,7 +16,10 @@
     {% for response in response_list %}
     <tr>
         <td>
-            <div>{{ response.created_datetime }}</div>
+            <div>
+                <span>{{ response.created_datetime }}</span>
+                <a id="{{ response.order_in_thread }}" href="#{{ response.order_in_thread }}" style="float: right">#{{ response.order_in_thread }}</a>
+            </div>
             {{ response }}
             {% if response.edited %}
             <div><small>This post has been edited.</small></div>
@@ -47,7 +50,7 @@
 <div>The requested thread is non-existent on this forum.</div>
 {% endif %}
 <nav aria-label="...">
-    <ul class="pagination">
+    <ul class="pagination justify-content-center">
         {% if response_list.has_previous %}
         <li class="page-item"><a class="page-link" href="?page={{ response_list.previous_page_number }}">Previous</a></li>
         {% endif %}

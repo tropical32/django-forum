@@ -42,6 +42,7 @@ class ThreadResponse(models.Model):
     responder = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     message = models.TextField(max_length=1000)
     edited = models.BooleanField(default=False)
+    order_in_thread = models.PositiveIntegerField(default=1)
 
     class Meta:
         permissions = [
