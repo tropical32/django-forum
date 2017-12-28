@@ -73,6 +73,13 @@ def forums(request):
 
 def forum(request, pk):
     thread_list = Thread.objects.filter(forum=pk)
+    thread_paginator = Paginator(
+        thread_list,
+        2
+    )
+    page = request.GET.get('page')
+    thread_list = thread_paginator.get_page(page)
+
     return render(
         request,
         'forumapp/thread_list.html',
@@ -113,36 +120,6 @@ def thread_view(request, fpk, tpk):
             'can_delete_thread': can_delete_thread,
         }
     )
-
-
-# class ThreadResponseListView(generic.ListView):
-#     model = ThreadResponse
-#     paginate_by = 5
-#     template_name = 'forumapp/thread.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#
-#         thread = Thread.objects.get(id=self.kwargs['tpk'])
-#         parent_forum = Forum.objects.get(id=self.kwargs['fpk'])
-#         response_list = ThreadResponse.objects.filter(
-#             thread=self.kwargs['tpk'],
-#             thread__forum=self.kwargs['fpk']
-#         ).order_by(
-#             'created_datetime'
-#         )
-#         can_delete_thread = \
-#             response_list[0].responder == self.request.user \
-#             or self.request.user.has_perm(
-#                 'forumapp.can_remove_any_thread'
-#             )
-#
-#         context['thread'] = thread
-#         context['forum'] = parent_forum
-#         context['response_list'] = response_list
-#         context['can_delete_thread'] = can_delete_thread
-#
-#         return context
 
 
 @login_required

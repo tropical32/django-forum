@@ -54,7 +54,9 @@
 
         {% for i in response_list.paginator.num_pages|times %}
         {% if response_list.number|stringformat:"i" == i %}
-        <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        <li class="page-item active">
+            <span class="page-link">{{ i }}</span>
+        </li>
         {% else %}
         <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
         {% endif %}

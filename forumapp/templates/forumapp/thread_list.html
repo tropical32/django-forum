@@ -1,5 +1,7 @@
 {% extends "forumapp/base.html" %}
 
+{% load forumapp_extras %}
+
 {% block content %}
 <div>Forum: {{ forum.name }} - {{forum.section.name }}</div>
 {% if thread_list %}
@@ -35,6 +37,29 @@
 {% else %}
 <div>No threads.</div>
 {% endif %}
+
+
+<nav aria-label="...">
+    <ul class="pagination">
+        {% if thread_list.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ thread_list.previous_page_number }}">Previous</a></li>
+        {% endif %}
+
+        {% for i in thread_list.paginator.num_pages|times %}
+        {% if thread_list.number|stringformat:"i" == i %}
+        <li class="page-item active">
+            <span class="page-link">{{ i }}</span>
+        </li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if thread_list.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ thread_list.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
 <a
     href="{% url 'new-thread' forum.id %}"
     class="btn btn-success"
