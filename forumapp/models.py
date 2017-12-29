@@ -51,3 +51,21 @@ class ThreadResponse(models.Model):
 
     def __str__(self):
         return self.message
+
+
+class LikeDislike(models.Model):
+    """
+    like - specifies whether the thread was liked (disliked otherwise)
+    response - specifies the associated response
+    """
+    user = models.ForeignKey(
+        User,
+        null=True,
+        on_delete=models.CASCADE
+    )
+    like = models.BooleanField(default=True)
+    response = models.ForeignKey(
+        ThreadResponse,
+        null=False,
+        on_delete=models.CASCADE
+    )

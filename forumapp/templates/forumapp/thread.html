@@ -22,25 +22,15 @@
             </div>
             <div>
                 <span>{{ response }}</span>
-                <a href="#" style="float:right" class="fa fa-arrow-up"></a>
-                <a href="#" style="float:right" class="fa fa-arrow-down"></a>
             </div>
 
             {% if response.edited %}
-
             <div>
-                {% if response.edited %}
                 <small>This post has been edited.</small>
-                {% endif %}
-                <span style="float:right">Upvotes</span>
-            </div>
-            {% else %}
-            <div style="text-align:right">
-                <span style="text-align: right">Upvotes</span>
             </div>
             {% endif %}
 
-            <hr/>
+            <hr style="background: #000"/>
             by <a href="{% url 'user-view' response.responder.id %}">{{ response.responder }}</a>
             {% if response.responder == request.user %}
             <a
@@ -56,6 +46,21 @@
                 role="button"
             >Delete</a>
             {% endif %}
+
+            <div>
+                <form style="display:inline" action="{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 1 %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="fa fa-arrow-up"></button>
+                </form>
+                <form style="display:inline" action="{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 0 %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="fa fa-arrow-down"></button>
+                </form>
+            </div>
+            <div>
+                {{ response.likedislike_set.all|summarize_likes }}
+            </div>
+
         </td>
     </tr>
     {% endfor %}

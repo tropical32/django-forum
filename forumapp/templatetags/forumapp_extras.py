@@ -17,3 +17,11 @@ def times0(count):
 @register.filter(name='times')
 def times(count):
     return ''.join([str(num) for num in range(1, count + 1)])
+
+
+@register.filter(name='summarize_likes')
+def summarize_likes(likes_dislikes):
+    likes = likes_dislikes.filter(like=True).count()
+    dislikes = likes_dislikes.filter(like=False).count()
+
+    return likes - dislikes

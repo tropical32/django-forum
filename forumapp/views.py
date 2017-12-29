@@ -6,15 +6,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, \
-    HttpResponseForbidden
+    HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import generic
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
     ThreadResponseDeleteForm, \
-    ThreadDeleteForm
-from .models import Thread, ForumSection, ThreadResponse, Forum
+    ThreadDeleteForm, LikeDislikeForm
+from .models import Thread, ForumSection, ThreadResponse, Forum, LikeDislike
 
 
 def signup(request):
@@ -110,6 +110,27 @@ def thread_view(request, fpk, tpk):
     page = request.GET.get('page')
     response_list = response_paginator.get_page(page)
 
+    # like_dislike_forms = []
+    # for response in response_list:
+    #     # create a form with `like` set to True
+    #     like_dislike_forms.append(
+    #         LikeDislikeForm(
+    #             initial={
+    #                 'like': True,
+    #                 'response': response
+    #             }
+    #         )
+    #     )
+    #     # create a form with `like` set to False
+    #     like_dislike_forms.append(
+    #         LikeDislikeForm(
+    #             initial={
+    #                 'like': False,
+    #                 'response': response
+    #             }
+    #         )
+    #     )
+
     return render(
         request,
         'forumapp/thread.html',
@@ -118,8 +139,32 @@ def thread_view(request, fpk, tpk):
             'response_list': response_list,
             'forum': parent_forum,
             'can_delete_thread': can_delete_thread,
+            # 'like_dislike_forms': like_dislike_forms
         }
     )
+
+
+@login_required
+def like_dislike_post(request, fpk, tpk, ppk, upvote):
+    print("Here")
+    """
+    This view is responsible for liking/disliking a response
+    :param request request
+    :param fpk: forum primary key
+    :param tpk: thread primary key
+    :param ppk: post primary key
+    :param upvote: 0 or 1 - like or dislike
+    """
+    if request.method == "POST":
+        form = LikeDislikeForm(request.POST)
+        if form.is_valid():
+            like_dislike_obj = LikeDislike.objects.get_or_create(
+                response=ThreadResponse.objects.get(id=ppk),
+                user=request.user
+            )[0]
+            like_dislike_obj.like = upvote
+            like_dislike_obj.save()
+            return HttpResponse("Your vote has been saved.")
 
 
 @login_required

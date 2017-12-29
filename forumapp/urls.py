@@ -54,4 +54,9 @@ urlpatterns = [
         views.delete_post,
         name='delete-post'
     ),
+    path(
+        'forum/<int:fpk>/thread/<int:tpk>/post/<int:ppk>/like/<int:upvote>',
+        views.like_dislike_post,
+        name='like-dislike-post'
+    ),
 ]
