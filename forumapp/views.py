@@ -146,7 +146,6 @@ def thread_view(request, fpk, tpk):
 
 @login_required
 def like_dislike_post(request, fpk, tpk, ppk, upvote):
-    print("Here")
     """
     This view is responsible for liking/disliking a response
     :param request request
@@ -164,7 +163,17 @@ def like_dislike_post(request, fpk, tpk, ppk, upvote):
             )[0]
             like_dislike_obj.like = upvote
             like_dislike_obj.save()
-            return HttpResponse("Your vote has been saved.")
+            return HttpResponseRedirect(
+                reverse(
+                    'thread-view',
+                    kwargs={
+                        'fpk': fpk,
+                        'tpk': tpk
+                    }
+                )
+            )
+    else:
+        return HttpResponseForbidden()
 
 
 @login_required
