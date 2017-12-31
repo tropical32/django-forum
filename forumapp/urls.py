@@ -24,6 +24,11 @@ urlpatterns = [
         name='user-view'
     ),
     path(
+        'user/<int:pk>/ban',
+        views.ban_user,
+        name='ban-user'
+    ),
+    path(
         'forum/<int:pk>/new-thread',
         views.new_thread,
         name='new-thread'

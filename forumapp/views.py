@@ -6,12 +6,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, \
-    HttpResponseForbidden
+    HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
-    ThreadResponseDeleteForm, ThreadDeleteForm, LikeDislikeForm
+    ThreadResponseDeleteForm, ThreadDeleteForm, LikeDislikeForm, BanUserForm
 from .models import Thread, ForumSection, ThreadResponse, Forum, LikeDislike, \
     ForumUser
 
@@ -124,8 +124,28 @@ def thread_view(request, fpk, tpk):
 
 
 @permission_required('forumapp.can_ban_users')
-def ban_user(request, pk, datetime_until):
-    pass
+def ban_user(request, pk):
+    ban_user_form = BanUserForm(
+        initial={
+            'user': ForumUser.objects.get(pk=pk)
+        }
+    )
+
+    if request.method == "POST":
+        ban_user_form = BanUserForm(request.POST)
+        if ban_user_form.is_valid():
+            forum_user = ForumUser.objects.get(user=pk)
+            forum_user.banned_until = ban_user_form.cleaned_data['banned_until']
+            forum_user.save()
+            return HttpResponse("Ban date changed successfully!")
+
+    return render(
+        request,
+        'forumapp/ban_user.html',
+        {
+            'form': ban_user_form
+        }
+    )
 
 
 @login_required
@@ -338,23 +358,28 @@ def edit_post(request, fpk, tpk, ppk):
 
 
 def user_view(request, pk):
-    user = User.objects.get(id=pk)
+    viewed_user = User.objects.get(id=pk)
     user_responses = ThreadResponse.objects.filter(
         responder=pk
     ).exclude(thread__isnull=True)
 
     banned_until = None
-    forum_user = ForumUser.objects.get(user=user)
+    forum_user = ForumUser.objects.get(user=viewed_user)
     if forum_user.banned_until.replace(tzinfo=None) > datetime.datetime.now():
         banned_until = forum_user.banned_until
+
+    can_ban = False
+    if request.user.has_perm('forumapp.can_ban_users'):
+        can_ban = True
 
     return render(
         request,
         'forumapp/user_view.html',
         context={
-            'user': user,
+            'viewed_user': viewed_user,
             'user_responses': user_responses,
-            'banned_until': banned_until
+            'banned_until': banned_until,
+            'can_ban': can_ban
         }
     )
 

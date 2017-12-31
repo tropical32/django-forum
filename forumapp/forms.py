@@ -36,3 +36,10 @@ class LikeDislikeForm(models.ModelForm):
     class Meta:
         model = LikeDislike
         fields = []
+
+
+class BanUserForm(models.ModelForm):
+    class Meta:
+        model = ForumUser
+        # fields = ['username']
+        fields = ['banned_until']
