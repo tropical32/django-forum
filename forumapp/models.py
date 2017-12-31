@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-# Create your models here.
 from django.utils import timezone
 
 
@@ -76,3 +75,8 @@ class LikeDislike(models.Model):
 class ForumUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     banned_until = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        permissions = [
+            ('can_ban_users', 'Can ban any user.')
+        ]

@@ -39,7 +39,7 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link">Logged as {{ user }}</a>
+                <a class="nav-link" href="{% url 'user-view' user.pk %}">Logged as {{ user }}</a>
             </li>
             {% else %}
             <li class="nav-item">

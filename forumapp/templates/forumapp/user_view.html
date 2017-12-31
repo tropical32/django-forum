@@ -2,6 +2,11 @@
 
 {% block content %}
 {% for response in user_responses %}
+
+{% if banned_until %}
+<div>Banned until: {{ banned_until }}</div>
+{% endif %}
+
 <div>
     {% if response.order_in_thread > 10 %}
 

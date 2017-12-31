@@ -1,7 +1,7 @@
 import datetime
 
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -110,27 +110,6 @@ def thread_view(request, fpk, tpk):
     page = request.GET.get('page')
     response_list = response_paginator.get_page(page)
 
-    # like_dislike_forms = []
-    # for response in response_list:
-    #     # create a form with `like` set to True
-    #     like_dislike_forms.append(
-    #         LikeDislikeForm(
-    #             initial={
-    #                 'like': True,
-    #                 'response': response
-    #             }
-    #         )
-    #     )
-    #     # create a form with `like` set to False
-    #     like_dislike_forms.append(
-    #         LikeDislikeForm(
-    #             initial={
-    #                 'like': False,
-    #                 'response': response
-    #             }
-    #         )
-    #     )
-
     return render(
         request,
         'forumapp/thread.html',
@@ -142,6 +121,11 @@ def thread_view(request, fpk, tpk):
             # 'like_dislike_forms': like_dislike_forms
         }
     )
+
+
+@permission_required('forumapp.can_ban_users')
+def ban_user(request, pk, datetime_until):
+    pass
 
 
 @login_required
@@ -178,6 +162,11 @@ def like_dislike_post(request, fpk, tpk, ppk, upvote):
 
 @login_required
 def respond(request, fpk, tpk):
+    forum_user = ForumUser.objects.get(user=request.user)
+    if forum_user.banned_until.replace(tzinfo=None) > datetime.datetime.now():
+        return HttpResponseForbidden("You are banned! "
+                                     "Check your profile for details.")
+
     if request.method == "POST":
         form = ThreadResponseModelForm(
             request.POST,
@@ -354,18 +343,29 @@ def user_view(request, pk):
         responder=pk
     ).exclude(thread__isnull=True)
 
+    banned_until = None
+    forum_user = ForumUser.objects.get(user=user)
+    if forum_user.banned_until.replace(tzinfo=None) > datetime.datetime.now():
+        banned_until = forum_user.banned_until
+
     return render(
         request,
         'forumapp/user_view.html',
         context={
             'user': user,
-            'user_responses': user_responses
+            'user_responses': user_responses,
+            'banned_until': banned_until
         }
     )
 
 
 @login_required
 def new_thread(request, pk):
+    forum_user = ForumUser.objects.get(user=request.user)
+    if forum_user.banned_until.replace(tzinfo=None) > datetime.datetime.now():
+        return HttpResponseForbidden("You are banned! "
+                                     "Check your profile for details.")
+
     if request.method == "POST":
         form_thread = ThreadCreateModelForm(
             request.POST,
