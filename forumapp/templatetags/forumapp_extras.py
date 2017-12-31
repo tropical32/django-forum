@@ -25,3 +25,8 @@ def summarize_likes(likes_dislikes):
     dislikes = likes_dislikes.filter(like=False).count()
 
     return likes - dislikes
+
+
+@register.filter(name='capitalize')
+def capitalize(text):
+    return text.upper()

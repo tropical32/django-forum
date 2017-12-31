@@ -6,15 +6,14 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, \
-    HttpResponseForbidden, HttpResponse
+    HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views import generic
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
-    ThreadResponseDeleteForm, \
-    ThreadDeleteForm, LikeDislikeForm
-from .models import Thread, ForumSection, ThreadResponse, Forum, LikeDislike
+    ThreadResponseDeleteForm, ThreadDeleteForm, LikeDislikeForm
+from .models import Thread, ForumSection, ThreadResponse, Forum, LikeDislike, \
+    ForumUser
 
 
 def signup(request):
@@ -28,6 +27,7 @@ def signup(request):
                 username=username,
                 password=raw_password
             )
+            ForumUser(user=user).save()
             login(request, user)
             return redirect('index')
     else:

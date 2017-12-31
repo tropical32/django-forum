@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-
 # Create your models here.
+from django.utils import timezone
+
+
 class ForumSection(models.Model):
     name = models.CharField(max_length=30)
 
@@ -69,3 +71,8 @@ class LikeDislike(models.Model):
         null=False,
         on_delete=models.CASCADE
     )
+
+
+class ForumUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    banned_until = models.DateTimeField(default=timezone.now)

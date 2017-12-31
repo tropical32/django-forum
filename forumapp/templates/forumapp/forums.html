@@ -1,5 +1,7 @@
 {% extends 'forumapp/base.html' %}
 
+{% load forumapp_extras %}
+
 {% block content %}
 
 {% for section in sections %}
@@ -7,7 +9,7 @@
     <table class="table forum-table">
         <thead>
         <tr>
-            <th>{{ section.name }}</th>
+            <th>{{ section.name|capitalize }}</th>
             <th>Recent post</th>
             <th>Topics</th>
         </tr>
