@@ -5,12 +5,16 @@ User | {{ viewed_user }}
 {% endblock %}
 
 {% block content %}
-{% for response in user_responses %}
+<h1>User: {{ viewed_user }}</h1>
+<hr />
 
 {% if banned_until %}
 <div>Banned until: {{ banned_until }}</div>
 {% endif %}
 
+<h2>Responses</h2>
+
+{% for response in user_responses %}
 <div>
     {% if response.order_in_thread > 10 %}
 
@@ -22,6 +26,9 @@ User | {{ viewed_user }}
 
     {% endif %}
 </div>
+
+{% empty %}
+<div>No responses.</div>
 {% endfor %}
 {% if can_ban %}
     <div><a role="button" href="{% url 'ban-user' viewed_user.pk %}" class="btn btn-warning">Ban User</a></div>

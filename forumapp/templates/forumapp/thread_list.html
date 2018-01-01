@@ -26,11 +26,11 @@
                     {{ thread.name }}
                 </a>
             </div>
-            {{ thread.threadresponse_set.first.created_datetime }} by {{ thread.threadresponse_set.first.responder }}
+            {{ thread.threadresponse_set.first.created_datetime }} by <a href="{% url 'user-view' thread.threadresponse_set.first.responder.pk %}">{{ thread.threadresponse_set.first.responder }}</a>
         </td>
         <td>{{ thread.threadresponse_set.all|length|add:"-1" }}</td>
         {% if thread.threadresponse_set.all|length > 1 %}
-        <td>"{{ thread.threadresponse_set.last.message|truncatechars:15 }}" by {{ thread.threadresponse_set.last.responder }}</td>
+        <td>"<a href="{% url 'thread-view' thread.threadresponse_set.last.thread.forum.id thread.threadresponse_set.last.thread.id %}#{{ thread.threadresponse_set.last.order_in_thread }}">{{ thread.threadresponse_set.last.message|truncatechars:15 }}</a>" by <a href="{% url 'user-view' thread.threadresponse_set.last.responder.pk %}">{{ thread.threadresponse_set.last.responder }}</a>
         {% else %}
         <td>No responses</td>
         {% endif %}
