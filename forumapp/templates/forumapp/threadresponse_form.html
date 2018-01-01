@@ -1,5 +1,9 @@
 {% extends "forumapp/base.html" %}
 
+{% block title %}
+Response form
+{% endblock %}
+
 {% block content %}
 {% if form.message.value %}
 <div>Editing your post for: <a href="{% url 'thread-view' forum.id thread.id %}">{{ thread }}</a></div>

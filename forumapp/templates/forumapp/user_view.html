@@ -1,5 +1,9 @@
 {% extends 'forumapp/base.html' %}
 
+{% block title %}
+User | {{ viewed_user }}
+{% endblock %}
+
 {% block content %}
 {% for response in user_responses %}
 

@@ -1,9 +1,13 @@
 {% extends "forumapp/base.html" %}
 
+{% block title %}
+{{ forum.name }}
+{% endblock %}
+
 {% load forumapp_extras %}
 
 {% block content %}
-<div>Forum: {{ forum.name }} - {{forum.section.name }}</div>
+<div>Forum: {{ forum.name }} - {{ forum.section.name }}</div>
 {% if thread_list %}
 <table class="table forum-table">
     <thead>

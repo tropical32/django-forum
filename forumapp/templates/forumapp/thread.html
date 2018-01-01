@@ -1,5 +1,9 @@
 {% extends "forumapp/base.html" %}
 
+{% block title %}
+{{ forum.name }} | {{thread.name }}
+{% endblock %}
+
 {% load forumapp_extras %}
 
 {% block content %}
