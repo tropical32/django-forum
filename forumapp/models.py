@@ -32,9 +32,8 @@ class Thread(models.Model):
         return self.name
 
     class Meta:
-        permissions = [
-            ('can_remove_any_thread', 'Can remove ANY thread.'),
-        ]
+        permissions = [('can_remove_any_thread', 'Can remove ANY thread.') ]
+        # ordering = ['threadresponse']
 
 
 class ThreadResponse(models.Model):
@@ -46,9 +45,8 @@ class ThreadResponse(models.Model):
     order_in_thread = models.PositiveIntegerField(default=1)
 
     class Meta:
-        permissions = [
-            ('can_remove_any_response', 'Can remove ANY response.')
-        ]
+        permissions = [('can_remove_any_response', 'Can remove ANY response.')]
+        ordering = ['created_datetime']
 
     def __str__(self):
         return self.message

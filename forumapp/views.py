@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LogoutView
 from django.core.paginator import Paginator
+from django.db.models import Min, Max
 from django.http import HttpResponseRedirect, \
     HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect
@@ -73,11 +74,15 @@ def forums(request):
 
 
 def forum(request, pk):
-    thread_list = Thread.objects.filter(forum=pk)
-    thread_paginator = Paginator(
-        thread_list,
-        2
+    thread_list = Thread.objects.filter(
+        forum=pk
+    ).annotate(
+        last_response=Max('threadresponse__created_datetime')
+    ).order_by(
+        '-last_response'
     )
+
+    thread_paginator = Paginator(thread_list, 10)
     page = request.GET.get('page')
     thread_list = thread_paginator.get_page(page)
 
