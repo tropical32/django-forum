@@ -7,6 +7,7 @@ Ban User
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" class="btn btn-warning" value="Ban"/>
+    <input type="submit" class="btn btn-warning" value="Change ban date"/>
 </form>
+<small>If the date of the ban is earlier than now, then it means the user is not banned.</small>
 {% endblock %}

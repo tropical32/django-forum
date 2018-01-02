@@ -34,6 +34,11 @@ urlpatterns = [
         name='new-thread'
     ),
     path(
+        'forum/<int:fpk>/thread/<int:tpk>/pin',
+        views.pin_thread,
+        name='pin-thread'
+    ),
+    path(
         'forum/<int:fpk>/thread/<int:tpk>',
         views.thread_view,
         name='thread-view'

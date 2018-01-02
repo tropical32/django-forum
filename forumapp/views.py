@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
@@ -13,7 +14,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
-    ThreadResponseDeleteForm, ThreadDeleteForm, LikeDislikeForm, BanUserForm
+    ThreadResponseDeleteForm, ThreadDeleteForm, LikeDislikeForm, BanUserForm, \
+    PinThreadForm
 from .models import Thread, ForumSection, ThreadResponse, Forum, LikeDislike, \
     ForumUser
 
@@ -79,6 +81,7 @@ def forum(request, pk):
     ).annotate(
         last_response=Max('threadresponse__created_datetime')
     ).order_by(
+        '-pinned',
         '-last_response'
     )
 
@@ -94,6 +97,29 @@ def forum(request, pk):
             'forum': Forum.objects.get(id=pk)
         }
     )
+
+
+@login_required
+@permission_required('forumapp.can_pin_threads')
+def pin_thread(request, fpk, tpk):
+    form = PinThreadForm()
+    if request.method == "POST":
+        form = PinThreadForm(request.POST)
+        if form.is_valid():
+            thread = Thread.objects.get(pk=tpk)
+            thread.pinned = form.cleaned_data['pinned']
+            thread.save()
+
+            messages.success(request, message='Post successfully pinned!')
+            return HttpResponseRedirect(
+                reverse('forum', kwargs={'pk': fpk})
+            )
+    else:
+        return render(
+            request,
+            'forumapp/pin_thread.html',
+            {'form': form}
+        )
 
 
 def thread_view(request, fpk, tpk):

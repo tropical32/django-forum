@@ -31,6 +31,15 @@ User | {{ viewed_user }}
 <div>No responses.</div>
 {% endfor %}
 {% if can_ban %}
-    <div><a role="button" href="{% url 'ban-user' viewed_user.pk %}" class="btn btn-warning">Ban User</a></div>
+    <div>
+        <a
+            role="button"
+            href="{% url 'ban-user' viewed_user.pk %}"
+            class="btn btn-warning"
+        >
+            <span class="fa fa-ban"></span>
+            Manage Bans
+        </a>
+    </div>
 {% endif %}
 {% endblock %}

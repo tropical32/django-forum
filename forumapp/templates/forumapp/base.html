@@ -4,14 +4,22 @@
     {% load static %}
     <title>{% block title %}{% endblock %}</title>
     <meta charset="UTF-8"/>
-    <link rel="stylesheet" type="text/css"
-          href="{% static 'forumapp/css/style.css' %}"/>
+    <link
+        rel="stylesheet"
+        type="text/css"
+         href="{% static 'forumapp/css/style.css' %}"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-          crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'forumapp/css/font-awesome.min.css' %}">
+    <link
+        rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+        integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous"
+    >
+    <link
+        rel="stylesheet"
+        href="{% static 'forumapp/css/font-awesome.min.css' %}"
+    >
 </head>
 <body>
 <nav class="navbar navbar-expand-md bg-dark navbar-dark">
@@ -19,8 +27,12 @@
     <a class="navbar-brand" href="{% url 'index' %}">Forum</a>
 
     <!-- Toggler/collapsibe Button -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#collapsibleNavbar">
+    <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapsibleNavbar"
+    >
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -34,18 +46,38 @@
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 {% if user.is_authenticated %}
-                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                <a
+                    class="nav-link"
+                    href="{% url 'logout' %}"
+                >
+                    <span class="fa fa-sign-out"></span>
+                    Logout</a>
                 {% else %}
-                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                <a
+                    class="nav-link"
+                    href="{% url 'login' %}"
+                >
+                    <span class="fa fa-sign-in"></span>
+                    Login</a>
                 {% endif %}
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'user-view' user.pk %}">Logged as {{ user }}</a>
+                <a
+                    class="nav-link"
+                    href="{% url 'user-view' user.pk %}"
+                >Logged as {{ user }}
+                </a>
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
+                <a
+                    class="nav-link"
+                    href="{% url 'signup' %}"
+                >
+                    <span class="fa fa-user-plus"></span>
+                    Sign up
+                </a>
             </li>
             {% endif %}
         </ul>

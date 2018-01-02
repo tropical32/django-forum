@@ -1,7 +1,7 @@
 {% extends "forumapp/base.html" %}
 
 {% block title %}
-{{ forum.name }} | {{thread.name }}
+{{ forum.name }} | {{ thread.name }}
 {% endblock %}
 
 {% load forumapp_extras %}
@@ -22,7 +22,12 @@
         <td>
             <div>
                 <span>{{ response.created_datetime }}</span>
-                <a id="{{ response.order_in_thread }}" href="#{{ response.order_in_thread }}" style="float: right">#{{ response.order_in_thread }}</a>
+                <a
+                    id="{{ response.order_in_thread }}"
+                    href="#{{ response.order_in_thread }}"
+                    style="float: right"
+                >#{{ response.order_in_thread }}
+                </a>
             </div>
             <div>
                 <span>{{ response }}</span>
@@ -35,28 +40,47 @@
             {% endif %}
 
             <hr style="background: #000"/>
-            by <a href="{% url 'user-view' response.responder.id %}">{{ response.responder }}</a>
+            by <a
+                href="{% url 'user-view' response.responder.id %}"
+            >{{ response.responder }}
+            </a>
             {% if response.responder == request.user %}
             <a
                 style="float: right"
-                href="{% url 'edit-post' response.thread.forum.id response.thread.id response.id %}" class="btn btn-info"
+                href="{% url 'edit-post' response.thread.forum.id response.thread.id response.id %}"
+                class="btn btn-info"
                 role="button"
-            >Edit</a>
+            >
+                <span class="fa fa-pencil"></span>
+                Edit
+            </a>
             {% endif %}
             {% if response|can_remove_response:request.user and forloop.counter > 1 %}
             <a
                 style="float: right"
-                href="{% url 'delete-post' response.thread.forum.id response.thread.id response.id %}" class="btn btn-danger"
+                href="{% url 'delete-post' response.thread.forum.id response.thread.id response.id %}"
+                class="btn btn-danger"
                 role="button"
-            >Delete</a>
+            >
+                <span class="fa fa-times"></span>
+                Delete
+            </a>
             {% endif %}
 
             <div>
-                <form style="display:inline" action="{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 1 %}" method="POST">
+                <form
+                    style="display:inline"
+                    action="{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 1 %}"
+                    method="POST"
+                >
                     {% csrf_token %}
                     <button type="submit" class="fa fa-arrow-up"></button>
                 </form>
-                <form style="display:inline" action="{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 0 %}" method="POST">
+                <form
+                    style="display:inline"
+                    action="{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 0 %}"
+                    method="POST"
+                >
                     {% csrf_token %}
                     <button type="submit" class="fa fa-arrow-down"></button>
                 </form>
@@ -77,7 +101,12 @@
 <nav aria-label="...">
     <ul class="pagination justify-content-center">
         {% if response_list.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ response_list.previous_page_number }}">Previous</a></li>
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ response_list.previous_page_number }}"
+            >Previous</a>
+        </li>
         {% endif %}
 
         {% for i in response_list.paginator.num_pages|times %}
@@ -86,20 +115,47 @@
             <span class="page-link">{{ i }}</span>
         </li>
         {% else %}
-        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ i }}"
+            >{{ i }}</a>
+        </li>
         {% endif %}
         {% endfor %}
         {% if response_list.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ response_list.next_page_number }}">Next</a></li>
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ response_list.next_page_number }}"
+            >Next</a>
+        </li>
         {% endif %}
     </ul>
 </nav>
 
-<a href="{% url 'respond-thread' thread.forum.id thread.id %}"
-   class="btn btn-success" role="button">Respond</a>
+<a
+    href="{% url 'respond-thread' thread.forum.id thread.id %}"
+    class="btn btn-success"
+    role="button"
+>
+    <span class="fa fa-comment"></span>
+    Respond
+</a>
 {% if can_delete_thread %}
-<a href="{% url 'thread-delete' thread.forum.id thread.id %}"
-   class="btn btn-danger" role="button">Delete thread</a>
+    <a href="{% url 'thread-delete' thread.forum.id thread.id %}"
+       class="btn btn-danger" role="button"
+    >
+        <span class="fa fa-times"></span>
+        Delete thread</a>
 {% endif %}
 
+{% if perms.forumapp.can_pin_threads %}
+<a
+    href="{% url 'pin-thread' thread.forum.pk thread.pk %}"
+    class="btn btn-primary"
+><span class="fa fa-thumb-tack"></span>
+    Pin post
+</a>
+{% endif %}
 {% endblock %}

@@ -17,9 +17,13 @@
         <th>Last activity</th>
     </tr>
     </thead>
-    {% for thread in thread_list %}
     <tbody>
+    {% for thread in thread_list %}
+    {% if thread.pinned %}
+    <tr class="pinned clickable-row">
+    {% else %}
     <tr class="clickable-row">
+    {% endif %}
         <td>
             <div>
                 <a href="{% url 'thread-view' thread.forum.id thread.id %}">
@@ -30,13 +34,19 @@
         </td>
         <td>{{ thread.threadresponse_set.all|length|add:"-1" }}</td>
         {% if thread.threadresponse_set.all|length > 1 %}
-        <td>"<a href="{% url 'thread-view' thread.threadresponse_set.last.thread.forum.id thread.threadresponse_set.last.thread.id %}#{{ thread.threadresponse_set.last.order_in_thread }}">{{ thread.threadresponse_set.last.message|truncatechars:15 }}</a>" by <a href="{% url 'user-view' thread.threadresponse_set.last.responder.pk %}">{{ thread.threadresponse_set.last.responder }}</a>
+        <td>"
+            <a href="{% url 'thread-view' thread.threadresponse_set.last.thread.forum.id thread.threadresponse_set.last.thread.id %}#{{ thread.threadresponse_set.last.order_in_thread }}">
+                {{ thread.threadresponse_set.last.message|truncatechars:15 }}
+            </a>" by
+            <a href="{% url 'user-view' thread.threadresponse_set.last.responder.pk %}">
+                {{ thread.threadresponse_set.last.responder }}
+            </a>
         {% else %}
         <td>No responses</td>
         {% endif %}
     </tr>
-    </tbody>
     {% endfor %}
+    </tbody>
 </table>
 {% else %}
 <div>No threads.</div>
@@ -46,7 +56,13 @@
 <nav aria-label="...">
     <ul class="pagination justify-content-center">
         {% if thread_list.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ thread_list.previous_page_number }}">Previous</a></li>
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ thread_list.previous_page_number }}"
+            >Previous
+            </a>
+        </li>
         {% endif %}
 
         {% for i in thread_list.paginator.num_pages|times %}
@@ -55,11 +71,19 @@
             <span class="page-link">{{ i }}</span>
         </li>
         {% else %}
-        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+        </li>
         {% endif %}
         {% endfor %}
         {% if thread_list.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ thread_list.next_page_number }}">Next</a></li>
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ thread_list.next_page_number }}"
+            >Next
+            </a>
+        </li>
         {% endif %}
     </ul>
 </nav>
@@ -68,5 +92,8 @@
     href="{% url 'new-thread' forum.id %}"
     class="btn btn-success"
     role="button"
->Create a new thread</a>
+>
+    <span class="fa fa-plus"></span>
+    New thread
+</a>
 {% endblock %}

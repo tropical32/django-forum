@@ -1,5 +1,7 @@
 {% extends "forumapp/base.html" %}
 
+{% load staticfiles %}
+
 {% block title %}
 Thread form
 {% endblock %}
@@ -7,12 +9,16 @@ Thread form
 {% block content %}
 <form action="" method="post">
     {% csrf_token %}
-    <table>
-        {{ form_thread.as_table }}
-    </table>
-    <table>
-        {{ form_response.as_table }}
-    </table>
-    <input type="submit" value="Submit" />
+        {{ form_thread.as_p }}
+        {{ form_response.as_p }}
+    <input
+        type="submit"
+        value="Submit"
+        class="btn btn-success"
+    />
 </form>
+<div id="chars_left"></div>
+<script src="{% static 'forumapp/js/master.js' %}">
+</script>
 {% endblock %}
+

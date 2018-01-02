@@ -27,13 +27,19 @@ class Forum(models.Model):
 class Thread(models.Model):
     name = models.CharField(max_length=100)
     forum = models.ForeignKey(Forum, null=True, on_delete=models.CASCADE)
+    pinned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        permissions = [('can_remove_any_thread', 'Can remove ANY thread.') ]
-        # ordering = ['threadresponse']
+        permissions = [
+            ('can_remove_any_thread', 'Can remove ANY thread.'),
+            ('can_pin_threads', 'Can pin threads.')
+        ]
+        ordering = [
+            'pinned'
+        ]
 
 
 class ThreadResponse(models.Model):
