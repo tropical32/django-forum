@@ -68,6 +68,7 @@
             {% endif %}
 
             <div>
+                {% if request.user.is_authenticated %}
                 {% with liked=response.likedislike_set.all|voted_by_user:request.user %}
                 <a
                     href="javascript:vote('{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 1 %}')"
@@ -81,7 +82,8 @@
                     id="down_{{ response.id }}"
                 >
                 </a>
-            {% endwith %}
+                {% endwith %}
+                {% endif %}
             </div>
             <div id="likes_{{ response.id }}">
                 {{ response.likedislike_set.all|summarize_likes }}
