@@ -191,14 +191,41 @@ def like_dislike_post(request, fpk, tpk, ppk, upvote):
     :param ppk: post primary key
     :param upvote: 0 or 1 - like or dislike
     """
-    like_dislike_obj = LikeDislike.objects.get_or_create(
-        response=ThreadResponse.objects.get(id=ppk),
-        user=request.user
-    )[0]
+    try:
+        like_dislike_obj = LikeDislike.objects.get(
+            response=ThreadResponse.objects.get(id=ppk),
+            user=request.user
+        )
 
-    like_dislike_obj.like = upvote
-    like_dislike_obj.save()
-    return JsonResponse({})
+        if like_dislike_obj.like == upvote:
+            like_dislike_obj.delete()
+            return JsonResponse({
+                'action': 'removed',
+                'pk': ppk,
+                'upvote': upvote
+            })
+        else:
+            like_dislike_obj.like = upvote
+            like_dislike_obj.save()
+            return JsonResponse({
+                'action': 'flipped',
+                'to': upvote,
+                'pk': ppk
+            })
+
+    except LikeDislike.DoesNotExist:
+        like_dislike_obj = LikeDislike.objects.create(
+            response=ThreadResponse.objects.get(id=ppk),
+            user=request.user
+        )
+        like_dislike_obj.like = upvote
+        like_dislike_obj.save()
+
+        return JsonResponse({
+            'action': 'created',
+            'like': upvote,
+            'pk': ppk
+        })
 
 
 @login_required

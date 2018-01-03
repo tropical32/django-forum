@@ -68,22 +68,22 @@
             {% endif %}
 
             <div>
-                <div style="display:inline">
-                    <a
-                        href="javascript:vote('{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 1 %}')"
-                        class="fa fa-arrow-up gray-anchor"
-                    >
-                    </a>
-                </div>
-                <div style="display:inline">
-                    <a
-                        href="javascript:vote('{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 0 %}')"
-                        class="fa fa-arrow-down gray-anchor"
-                    >
-                    </a>
-                </div>
+                {% with liked=response.likedislike_set.all|voted_by_user:request.user %}
+                <a
+                    href="javascript:vote('{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 1 %}')"
+                    class="fa fa-arrow-up {% if liked == 0 or liked == -1 %}gray-anchor{% endif %}"
+                    id="up_{{ response.id }}"
+                >
+                </a>
+                <a
+                    href="javascript:vote('{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 0 %}')"
+                    class="fa fa-arrow-down {% if liked == 0 or liked == 1 %}gray-anchor{% endif %}"
+                    id="down_{{ response.id }}"
+                >
+                </a>
+            {% endwith %}
             </div>
-            <div>
+            <div id="likes_{{ response.id }}">
                 {{ response.likedislike_set.all|summarize_likes }}
             </div>
 
@@ -169,6 +169,49 @@
             dataType: 'json',
             success: function(data) {
 
+                if(data['action'] == 'removed'){
+                    $('#up_' + data['pk']).addClass('gray-anchor');
+                    $('#down_' + data['pk']).addClass('gray-anchor');
+                    current_val = parseInt($('#likes_' + data['pk']).text())
+
+                    if (data['upvote']) {
+                        current_val -= 1;
+                    } else {
+                        current_val += 1;
+                    }
+
+                    $('#likes_' + data['pk']).text(current_val);
+
+                } else if (data['action'] == 'flipped') {
+
+                    current_val = parseInt($('#likes_' + data['pk']).text())
+                    if (data['to'] == 1) {
+                        $('#down_' + data['pk']).addClass('gray-anchor');
+                        $('#up_' + data['pk']).removeClass('gray-anchor');
+                        current_val += 2;
+                    } else {
+                        $('#up_' + data['pk']).addClass('gray-anchor');
+                        $('#down_' + data['pk']).removeClass('gray-anchor');
+                        current_val -= 2;
+                    }
+
+                    $('#likes_' + data['pk']).text(current_val);
+
+                } else if (data['action'] == 'created') {
+
+                    current_val = parseInt($('#likes_' + data['pk']).text())
+
+                    if (data['like'] == 1) {
+                        $('#up_' + data['pk']).removeClass('gray-anchor');
+                        current_val += 1;
+                    } else {
+                        $('#down_' + data['pk']).removeClass('gray-anchor');
+                        current_val -= 1;
+                    }
+
+                    $('#likes_' + data['pk']).text(current_val);
+
+                }
             }
         });
     }
