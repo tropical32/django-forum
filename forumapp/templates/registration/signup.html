@@ -16,9 +16,54 @@ Sign up
 {% endblock %}
 
 {% block javascript %}
-<script src="{% static 'forumapp/js/validate_username.js' %}">
-</script>
+
 <script>
-    validate_username('{% url 'validate-username' %}');
+    var username_correct = null;
+    var password_correct = null;
+
+    $('#id_username').change(function() {
+
+        $.ajax({
+            url: "{% url 'validate-username' %}",
+            data: {
+                'username': $('#id_username').val()
+            },
+            dataType: 'json',
+            success: function(data) {
+                if(data.is_taken) {
+                    $('#id_username').removeClass('is-valid');
+                    $('#id_username').addClass('is-invalid');
+                    username_correct = false;
+                } else {
+                    $('#id_username').removeClass('is-invalid');
+                    $('#id_username').addClass('is-valid');
+                    username_correct = true;
+                }
+                username_and_password_correct();
+            }
+        });
+
+    });
+
+    $('#id_password1, #id_password2').keyup(function() {
+        password_correct = $('#id_password1').val() == $('#id_password2').val();
+        if(password_correct) {
+            $('#id_password1, #id_password2').removeClass('is-invalid');
+            $('#id_password1, #id_password2').addClass('is-valid');
+        } else {
+            $('#id_password1, #id_password2').removeClass('is-valid');
+            $('#id_password1, #id_password2').addClass('is-invalid');
+        }
+        username_and_password_correct();
+    });
+
+    function username_and_password_correct() {
+        if(username_correct && password_correct) {
+            $("#submit").prop('disabled', false);
+        } else {
+            $("#submit").prop('disabled', true);
+        }
+    }
 </script>
+
 {% endblock %}
