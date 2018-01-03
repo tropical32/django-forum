@@ -68,22 +68,20 @@
             {% endif %}
 
             <div>
-                <form
-                    style="display:inline"
-                    action="{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 1 %}"
-                    method="POST"
-                >
-                    {% csrf_token %}
-                    <button type="submit" class="fa fa-arrow-up"></button>
-                </form>
-                <form
-                    style="display:inline"
-                    action="{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 0 %}"
-                    method="POST"
-                >
-                    {% csrf_token %}
-                    <button type="submit" class="fa fa-arrow-down"></button>
-                </form>
+                <div style="display:inline">
+                    <a
+                        href="javascript:vote('{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 1 %}')"
+                        class="fa fa-arrow-up gray-anchor"
+                    >
+                    </a>
+                </div>
+                <div style="display:inline">
+                    <a
+                        href="javascript:vote('{% url 'like-dislike-post' response.thread.forum.id response.thread.id response.id 0 %}')"
+                        class="fa fa-arrow-down gray-anchor"
+                    >
+                    </a>
+                </div>
             </div>
             <div>
                 {{ response.likedislike_set.all|summarize_likes }}
@@ -158,4 +156,21 @@
     Pin post
 </a>
 {% endif %}
+{% endblock %}
+
+{% block javascript %}
+<script>
+    function vote(url) {
+        $.ajax({
+            url: url,
+            data: {
+                'request': '{{ request }}'
+            },
+            dataType: 'json',
+            success: function(data) {
+
+            }
+        });
+    }
+</script>
 {% endblock %}

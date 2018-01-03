@@ -19,3 +19,7 @@ body {
 .pinned {
     background: #EBFFEF;
 }
+
+a.gray-anchor:link {
+    color: #ccc;
+}

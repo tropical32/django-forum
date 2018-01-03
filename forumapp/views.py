@@ -9,7 +9,7 @@ from django.contrib.auth.views import LogoutView
 from django.core.paginator import Paginator
 from django.db.models import Min, Max
 from django.http import HttpResponseRedirect, \
-    HttpResponseForbidden, HttpResponse, JsonResponse
+    HttpResponseForbidden, HttpResponse, JsonResponse, response
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -191,26 +191,14 @@ def like_dislike_post(request, fpk, tpk, ppk, upvote):
     :param ppk: post primary key
     :param upvote: 0 or 1 - like or dislike
     """
-    if request.method == "POST":
-        form = LikeDislikeForm(request.POST)
-        if form.is_valid():
-            like_dislike_obj = LikeDislike.objects.get_or_create(
-                response=ThreadResponse.objects.get(id=ppk),
-                user=request.user
-            )[0]
-            like_dislike_obj.like = upvote
-            like_dislike_obj.save()
-            return HttpResponseRedirect(
-                reverse(
-                    'thread-view',
-                    kwargs={
-                        'fpk': fpk,
-                        'tpk': tpk
-                    }
-                )
-            )
-    else:
-        return HttpResponseForbidden()
+    like_dislike_obj = LikeDislike.objects.get_or_create(
+        response=ThreadResponse.objects.get(id=ppk),
+        user=request.user
+    )[0]
+
+    like_dislike_obj.like = upvote
+    like_dislike_obj.save()
+    return JsonResponse({})
 
 
 @login_required
