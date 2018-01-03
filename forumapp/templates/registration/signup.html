@@ -1,5 +1,7 @@
 {% extends 'forumapp/base.html' %}
 
+{% load staticfiles %}
+
 {% block title %}
 Sign up
 {% endblock %}
@@ -9,6 +11,14 @@ Sign up
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Sign up</button>
+    <input value="Sign up" id='submit' class="btn btn-success" type="submit"/>
 </form>
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'forumapp/js/validate_username.js' %}">
+</script>
+<script>
+    validate_username('{% url 'validate-username' %}');
+</script>
 {% endblock %}

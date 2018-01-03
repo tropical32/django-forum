@@ -68,4 +68,10 @@ urlpatterns = [
         views.like_dislike_post,
         name='like-dislike-post'
     ),
+    # AJAX #
+    path(
+        'ajax/validate_username/',
+        views.validate_username,
+        name='validate-username'
+    ),
 ]

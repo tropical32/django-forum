@@ -9,20 +9,21 @@ from django.contrib.auth.views import LogoutView
 from django.core.paginator import Paginator
 from django.db.models import Min, Max
 from django.http import HttpResponseRedirect, \
-    HttpResponseForbidden, HttpResponse
+    HttpResponseForbidden, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
     ThreadResponseDeleteForm, ThreadDeleteForm, LikeDislikeForm, BanUserForm, \
-    PinThreadForm
+    PinThreadForm, StylizedUserCreationForm
 from .models import Thread, ForumSection, ThreadResponse, Forum, LikeDislike, \
     ForumUser
 
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        # form = UserCreationForm(request.POST)
+        form = StylizedUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -35,7 +36,7 @@ def signup(request):
             login(request, user)
             return redirect('index')
     else:
-        form = UserCreationForm()
+        form = StylizedUserCreationForm()
     return render(
         request,
         'registration/signup.html',
@@ -387,6 +388,14 @@ def edit_post(request, fpk, tpk, ppk):
                 'forum': Forum.objects.get(id=fpk)
             }
         )
+
+
+def validate_username(request):
+    username = request.GET.get('username')
+    data = {
+        'is_taken': User.objects.filter(username__iexact=username).exists()
+    }
+    return JsonResponse(data)
 
 
 def user_view(request, pk):

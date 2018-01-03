@@ -18,7 +18,8 @@ Response form
     <div id="chars_left"></div>
     <input class="btn btn-success" type="submit" value="Submit"/>
 </form>
-<script src="{% static 'forumapp/js/master.js' %}">
-</script>
 {% endblock %}
 
+{% block javascript %}
+<script src="{% static 'forumapp/js/chars_left_message.js' %}"></script>
+{% endblock %}

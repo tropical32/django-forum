@@ -1,4 +1,6 @@
-from django.forms import models, CharField, TextInput
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.forms import models, CharField, TextInput, PasswordInput
 from django import forms
 from .models import Thread, ThreadResponse, LikeDislike, ForumUser
 
@@ -21,6 +23,24 @@ class ThreadResponseModelForm(models.ModelForm):
         widgets = {
             'message': forms.Textarea(attrs={'class': 'form-control'})
         }
+
+
+class StylizedUserCreationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(StylizedUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget = TextInput(
+            attrs={'class': 'form-control'}
+        )
+        self.fields['password1'].widget = PasswordInput(
+            attrs={'class': 'form-control'}
+        )
+        self.fields['password2'].widget = PasswordInput(
+            attrs={'class': 'form-control'}
+        )
+
+    class Meta:
+        model = User
+        fields = UserCreationForm.Meta.fields
 
 
 class ThreadDeleteForm(models.ModelForm):
