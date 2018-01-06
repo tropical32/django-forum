@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% load forumapp_extras %}
+{% load staticfiles %}
 
 {% block content %}
 <div>Current forum: <a href="{% url 'forum' forum.id %}">{{ forum.name }}</a></div>
@@ -161,57 +162,74 @@
 {% endblock %}
 
 {% block javascript %}
+<script src="{% static 'forumapp/js/csrf_functions.js' %}"></script>
 <script>
+
+    var csrftoken = getCookie("csrftoken");
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
     function vote(url) {
-        $.ajax({
+        $.post({
             url: url,
             data: {
-                'request': '{{ request }}'
+                "request": "{{ request }}"
             },
-            dataType: 'json',
-            success: function(data) {
+            dataType: "json",
+            statusCode: {
 
-                if(data['action'] == 'removed'){
-                    $('#up_' + data['pk']).addClass('gray-anchor');
-                    $('#down_' + data['pk']).addClass('gray-anchor');
-                    current_val = parseInt($('#likes_' + data['pk']).text())
+                "202": function(data) {
 
-                    if (data['upvote']) {
+                    $("#up_" + data.pk).addClass("gray-anchor");
+                    $("#down_" + data.pk).addClass("gray-anchor");
+                    current_val = parseInt($("#likes_" + data.pk).text());
+
+                    if (data.upvote) {
                         current_val -= 1;
                     } else {
                         current_val += 1;
                     }
 
-                    $('#likes_' + data['pk']).text(current_val);
+                    $("#likes_" + data.pk).text(current_val);
 
-                } else if (data['action'] == 'flipped') {
+                },
 
-                    current_val = parseInt($('#likes_' + data['pk']).text())
-                    if (data['to'] == 1) {
-                        $('#down_' + data['pk']).addClass('gray-anchor');
-                        $('#up_' + data['pk']).removeClass('gray-anchor');
+                "200": function(data) {
+
+                    current_val = parseInt($("#likes_" + data.pk).text());
+                    if (data.to == 1) {
+                        $("#down_" + data.pk).addClass("gray-anchor");
+                        $("#up_" + data.pk).removeClass("gray-anchor");
                         current_val += 2;
                     } else {
-                        $('#up_' + data['pk']).addClass('gray-anchor');
-                        $('#down_' + data['pk']).removeClass('gray-anchor');
+                        $("#up_" + data.pk).addClass("gray-anchor");
+                        $("#down_" + data.pk).removeClass("gray-anchor");
                         current_val -= 2;
                     }
 
-                    $('#likes_' + data['pk']).text(current_val);
+                    $("#likes_" + data.pk).text(current_val);
 
-                } else if (data['action'] == 'created') {
+                },
 
-                    current_val = parseInt($('#likes_' + data['pk']).text())
+                "201": function(data) {
 
-                    if (data['like'] == 1) {
-                        $('#up_' + data['pk']).removeClass('gray-anchor');
+                    current_val = parseInt($("#likes_" + data.pk).text());
+
+                    if (data.like == 1) {
+                        $("#up_" + data.pk).removeClass("gray-anchor");
                         current_val += 1;
                     } else {
-                        $('#down_' + data['pk']).removeClass('gray-anchor');
+                        $("#down_" + data.pk).removeClass("gray-anchor");
                         current_val -= 1;
                     }
 
-                    $('#likes_' + data['pk']).text(current_val);
+                    $("#likes_" + data.pk).text(current_val);
 
                 }
             }

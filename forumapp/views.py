@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect, \
     HttpResponseForbidden, HttpResponse, JsonResponse, response
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from forumapp.forms import ThreadCreateModelForm, ThreadResponseModelForm, \
     ThreadResponseDeleteForm, ThreadDeleteForm, LikeDislikeForm, BanUserForm, \
@@ -182,6 +183,7 @@ def ban_user(request, pk):
 
 
 @login_required
+@ensure_csrf_cookie
 def like_dislike_post(request, fpk, tpk, ppk, upvote):
     """
     This view is responsible for liking/disliking a response
@@ -191,41 +193,39 @@ def like_dislike_post(request, fpk, tpk, ppk, upvote):
     :param ppk: post primary key
     :param upvote: 0 or 1 - like or dislike
     """
-    try:
-        like_dislike_obj = LikeDislike.objects.get(
-            response=ThreadResponse.objects.get(id=ppk),
-            user=request.user
-        )
+    if request.method == 'POST':
+        try:
+            like_dislike_obj = LikeDislike.objects.get(
+                response=ThreadResponse.objects.get(id=ppk),
+                user=request.user
+            )
 
-        if like_dislike_obj.like == upvote:
-            like_dislike_obj.delete()
-            return JsonResponse({
-                'action': 'removed',
-                'pk': ppk,
-                'upvote': upvote
-            })
-        else:
+            if like_dislike_obj.like == upvote:
+                like_dislike_obj.delete()
+                return JsonResponse({
+                    'pk': ppk,
+                    'upvote': upvote
+                }, status=202)
+            else:
+                like_dislike_obj.like = upvote
+                like_dislike_obj.save()
+                return JsonResponse({
+                    'to': upvote,
+                    'pk': ppk
+                }, status=200)
+
+        except LikeDislike.DoesNotExist:
+            like_dislike_obj = LikeDislike.objects.create(
+                response=ThreadResponse.objects.get(id=ppk),
+                user=request.user
+            )
             like_dislike_obj.like = upvote
             like_dislike_obj.save()
+
             return JsonResponse({
-                'action': 'flipped',
-                'to': upvote,
+                'like': upvote,
                 'pk': ppk
-            })
-
-    except LikeDislike.DoesNotExist:
-        like_dislike_obj = LikeDislike.objects.create(
-            response=ThreadResponse.objects.get(id=ppk),
-            user=request.user
-        )
-        like_dislike_obj.like = upvote
-        like_dislike_obj.save()
-
-        return JsonResponse({
-            'action': 'created',
-            'like': upvote,
-            'pk': ppk
-        })
+            }, status=201)
 
 
 @login_required
